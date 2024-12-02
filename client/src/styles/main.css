@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base styles */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+}
+
+/* Gradient styles */
+.gradient-background {
+    background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
+}
+
+.gradient-button {
+    background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-weight: bold; 
+    border-radius: 17px;
+    transition: all 0.3s ease; 
+}
+
+.gradient-button:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom login button */
+.gradient-border-button {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px; 
+    font-size: 16px;
+    color: #002F35; 
+    text-align: center; 
+    font-weight: bold; 
+    background: white; 
+    border: 2px solid transparent; 
+    border-radius: 17px;
+    background-image: linear-gradient(white, white), linear-gradient(90deg, #00899B 0%, #002F35 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    cursor: pointer;
+    transition: all 0.3s ease; 
+}
+
+.gradient-border-button:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Hero section */
+.hero-section {
+    background-color: white;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin: 0 auto 2rem auto;
+    display: block;
+}
+
+/* Section titles */
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
+}
+
+.section-title p {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #666;
+}
+
+/* Infrastructure section */
+.infrastructure-section {
+    padding: 4rem 0;
+}
+
+.infrastructure-card {
+    background: #F6F6F6;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.infrastructure-card p {
+    word-spacing: 2px;
+}
+
+
+/* Stats section */
+.stats-section {
+    background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
+    padding: 4rem 0;
+}
+
+.stats-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Process section */
+.process-icon {
+    background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.process-step-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.process-step-container:hover {
+    transform: translateY(-5px);
+}
+
+.process-vertical-line {
+    width: 2px;
+    height: 40px;
+    background: linear-gradient(180deg, #00899B 0%, #002F35 100%);
+    margin: 1rem auto;
+}
+
+/* Testimonial section */
+.testimonials-section {
+    background-color: #F6F6F6;
+    padding: 4rem 0;
+}
+
+.testimonial-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.testimonial-text {
+    color: #000;
+}
+
+.testimonial-name {
+    color: #000;
+    font-weight: 600;
+}
+
+/* Brand color */
+.brand-color {
+    color: white;
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#mobile-menu {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+
+#mobile-menu.open {
+    transform: translateX(0);
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    display: none;
+}
+
+.drawer-overlay.open {
+    display: block;
+}
