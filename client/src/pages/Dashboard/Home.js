@@ -134,9 +134,12 @@ export class HomePage {
                             </p>
                         </div>
                         <div class="text-center">
-                            <button class="gradient-button text-white px-6 py-2">
-                                Pelajari Selengkapnya
-                            </button>
+                        <button 
+                            class="gradient-button text-white px-6 py-2" 
+                            onclick="window.location.href='#/artikel';">
+                            Pelajari Selengkapnya
+                        </button>
+
                         </div>
                     </div>
                 </div>

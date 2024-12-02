@@ -40,8 +40,8 @@ export const Navbar = () => {
                         <div class="flex items-center space-x-6">
                             <a href="#/" class="hover:text-teal-200">Beranda</a>
                             <a href="#/artikel" class="hover:text-teal-200">Artikel</a>
-                            <a href="/pelaporan" class="hover:text-teal-200">Pelaporan</a>
-                            <a href="/tentang-kami" class="hover:text-teal-200">Tentang Kami</a>
+                            <a href="#/pelaporan" class="hover:text-teal-200">Pelaporan</a>
+                            <a href="#/tentang-kami" class="hover:text-teal-200">Tentang Kami</a>
                             <button class="gradient-border-button">
                                 Masuk
                             </button>

@@ -7,7 +7,7 @@ export class ArticlePage {
             id: 1,
             title: 'Infrastruktur: Pondasi Kehidupan Modern',
             excerpt: 'Infrastruktur yang berkualitas adalah kunci pembangunan berkelanjutan, meningkatkan kualitas hidup, dan mendorong pertumbuhan ekonomi masyarakat.',
-            image: '/images/infra.jpeg',
+            image: '/images/infraTikel.png',
             category: 'Infrastruktur',
             content: {
                 principles: [
@@ -185,7 +185,7 @@ export class ArticlePage {
                         ${sectionCards}
                     </div>
                     <div class="text-center mt-12">
-                        <a href="/pelaporan" class="cta-button">
+                        <a href="#/pelaporan" class="cta-button">
                             Lapor Sekarang
                         </a>
                     </div>
@@ -212,9 +212,17 @@ export class ArticlePage {
         }
     }
 
+    scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'instant'
+        });
+    }
+
     init() {
         try {
             this.render();
+            this.scrollToTop();
         } catch (error) {
             console.error('Error initializing article page:', error);
         }
