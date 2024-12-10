@@ -209,11 +209,12 @@ body {
 }
 
 #mobile-menu {
+    display: none;
     transition: transform 0.3s ease-in-out;
-    transform: translateX(-100%);
 }
 
 #mobile-menu.open {
+    display: block;
     transform: translateX(0);
 }
 

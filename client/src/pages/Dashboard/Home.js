@@ -1,22 +1,28 @@
-// client/src/pages/Dashboard/Home.js
-
 import { Navbar } from '../../components/common/Navbar.js';
 import { Footer } from '../../components/common/Footer.js';
 
-export class HomePage {
-    constructor() {
-        this.stats = {
-            active: 342,
-            completed: 127,
-            pending: 58
-        };
-        this.testimonials = [
-            { name: "John Carter", rating: 5, text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. " },
-            { name: "John Carter", rating: 5, text: "The best Workflow Templates" },
-            { name: "John Carter", rating: 5, text: "The best Workflow Templates" }
-        ];
-        this.loadSvgSprites();
-    }
+const HomePage = {
+    stats: {
+        active: 342,
+        completed: 127,
+        pending: 58
+    },
+    
+    testimonials: [
+        { name: "John Carter", rating: 5, text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit." },
+        { name: "John Carter", rating: 5, text: "The best Workflow Templates" },
+        { name: "John Carter", rating: 5, text: "The best Workflow Templates" }
+    ],
+
+    init() {
+        try {
+            this.loadSvgSprites();
+            this.render();
+            this.attachEventListeners();
+        } catch (error) {
+            console.error('Error initializing home page:', error);
+        }
+    },
 
     loadSvgSprites() {
         const svgUrl = '/images/decorative-elements.svg';
@@ -29,16 +35,27 @@ export class HomePage {
                 document.body.appendChild(div);
             })
             .catch(error => console.error('Error loading SVG sprites:', error));
-    }
+    },
 
-    async init() {
-        try {
-            this.render();
-            this.attachEventListeners();
-        } catch (error) {
-            console.error('Error initializing home page:', error);
+    render() {
+        const content = `
+            ${Navbar()}
+            <main class="min-h-screen">
+                ${this.createHeroSection()}
+                ${this.createIntroSection()}
+                ${this.createInfrastructureSection()}
+                ${this.createStatsSection()}
+                ${this.createProcessSection()}
+                ${this.createTestimonialsSection()}
+            </main>
+            ${Footer()}
+        `;
+
+        const appContainer = document.getElementById('app');
+        if (appContainer) {
+            appContainer.innerHTML = content;
         }
-    }
+    },
 
     createHeroSection() {
         return `
@@ -50,7 +67,7 @@ export class HomePage {
                     <svg class="w-full h-full"><use href="#dots"/></svg>
                 </div>
 
- <div class="container mx-auto px-4">
+                <div class="container mx-auto px-4">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div class="w-full md:w-1/2 md:order-2">
                             <div class="relative">
@@ -77,7 +94,7 @@ export class HomePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createIntroSection() {
         return `
@@ -105,7 +122,7 @@ export class HomePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createInfrastructureSection() {
         return `
@@ -117,7 +134,7 @@ export class HomePage {
                     <svg class="w-full h-full"><use href="#dots"/></svg>
                 </div>
 
-<div class="container mx-auto px-4 relative z-10">
+                <div class="container mx-auto px-4 relative z-10">
                     <div class="infrastructure-card">
                         <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">
                             Infrastruktur: Pondasi Kehidupan Modern
@@ -134,18 +151,17 @@ export class HomePage {
                             </p>
                         </div>
                         <div class="text-center">
-                        <button 
-                            class="gradient-button text-white px-6 py-2" 
-                            onclick="window.location.href='#/artikel';">
-                            Pelajari Selengkapnya
-                        </button>
-
+                            <button 
+                                class="gradient-button text-white px-6 py-2" 
+                                onclick="window.location.href='#/artikel';">
+                                Pelajari Selengkapnya
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
         `;
-    }
+    },
 
     createStatsSection() {
         return `
@@ -204,7 +220,7 @@ export class HomePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createProcessSection() {
         return `
@@ -215,14 +231,13 @@ export class HomePage {
                 <div class="decorative-element bottom-[20%] -left-10 w-32 h-32 decoration-teal opacity-15">
                     <svg class="w-full h-full"><use href="#flower"/></svg>
                 </div>
-
-                 <div class="container mx-auto px-4 relative z-10">
+                <div class="container mx-auto px-4 relative z-10">
                     <h2 class="section-title">
                         Alur Pelaporan
                     </h2>
-
+    
                     <!-- Mobile Process Steps -->
-                    <div class="md:hidden process-steps-mobile">
+                    <div class="block md:hidden process-steps-mobile">
                         <div class="flex flex-col items-center">
                             <span class="material-icons-round process-icon mb-4">edit_note</span>
                             <h3 class="text-xl font-bold mb-3">Tulis Laporan</h3>
@@ -232,7 +247,6 @@ export class HomePage {
                             <div class="process-vertical-line"></div>
                         </div>
                         
-                        <!-- Other mobile steps with same styling -->
                         <div class="flex flex-col items-center">
                             <span class="material-icons-round process-icon mb-4">track_changes</span>
                             <h3 class="text-xl font-bold mb-3">Proses Tindak Lanjut</h3>
@@ -241,7 +255,7 @@ export class HomePage {
                             </p>
                             <div class="process-vertical-line"></div>
                         </div>
-
+    
                         <div class="flex flex-col items-center">
                             <span class="material-icons-round process-icon mb-4">task_alt</span>
                             <h3 class="text-xl font-bold mb-3">Selesai</h3>
@@ -250,7 +264,7 @@ export class HomePage {
                             </p>
                             <div class="process-vertical-line"></div>
                         </div>
-
+    
                         <div class="flex flex-col items-center">
                             <span class="material-icons-round process-icon mb-4">rate_review</span>
                             <h3 class="text-xl font-bold mb-3">Beri Tanggapan</h3>
@@ -259,54 +273,46 @@ export class HomePage {
                             </p>
                         </div>
                     </div>
-
+    
                     <!-- Desktop Process Steps -->
-                    <div class="hidden md:block max-w-4xl mx-auto">
+                    <div class="process-steps-desktop hidden md:block max-w-4xl mx-auto">
                         <div class="grid grid-cols-4 gap-8 text-center relative">
-                            <div class="absolute top-12 left-0 right-0 h-0.5 gradient-background" style="z-index: 1;"></div>
+                            <div class="absolute top-12 left-0 right-0 h-0.5 gradient-background -z-0"></div>
                             
-                            <div class="process-step-container">
-                                <div class="relative z-10">
-                                    <span class="material-icons-round process-icon mb-4">edit_note</span>
-                                    <h3 class="text-xl font-bold mb-3">Tulis Laporan</h3>
-                                    <p class="text-lg text-gray-600">
-                                        Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap
-                                    </p>
-                                </div>
+                            <div class="process-step-container bg-white">
+                                <span class="material-icons-round process-icon mb-4">edit_note</span>
+                                <h3 class="text-xl font-bold mb-3">Tulis Laporan</h3>
+                                <p class="text-lg text-gray-600">
+                                    Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap
+                                </p>
                             </div>
-
-                            <div class="process-step-container">
-                                <div class="relative z-10">
-                                    <span class="material-icons-round process-icon mb-4">track_changes</span>
-                                    <h3 class="text-xl font-bold mb-3">Proses Tindak Lanjut</h3>
-                                    <p class="text-lg text-gray-600">
-                                        Kami menindaklanjuti dan membalas laporan Anda
-                                    </p>
-                                </div>
+    
+                            <div class="process-step-container bg-white">
+                                <span class="material-icons-round process-icon mb-4">track_changes</span>
+                                <h3 class="text-xl font-bold mb-3">Proses Tindak Lanjut</h3>
+                                <p class="text-lg text-gray-600">
+                                    Kami menindaklanjuti dan membalas laporan Anda
+                                </p>
                             </div>
-
-                            <div class="process-step-container">
-                                <div class="relative z-10">
-                                    <span class="material-icons-round process-icon mb-4">task_alt</span>
-                                    <h3 class="text-xl font-bold mb-3">Selesai</h3>
-                                    <p class="text-lg text-gray-600">
-                                        Laporan ditindaklanjuti
-                                    </p>
-                                </div>
+    
+                            <div class="process-step-container bg-white">
+                                <span class="material-icons-round process-icon mb-4">task_alt</span>
+                                <h3 class="text-xl font-bold mb-3">Selesai</h3>
+                                <p class="text-lg text-gray-600">
+                                    Laporan ditindaklanjuti
+                                </p>
                             </div>
-
-                            <div class="process-step-container">
-                                <div class="relative z-10">
-                                    <span class="material-icons-round process-icon mb-4">rate_review</span>
-                                    <h3 class="text-xl font-bold mb-3">Beri Tanggapan</h3>
-                                    <p class="text-lg text-gray-600">
-                                        Anda dapat menanggapi hasil laporan
-                                    </p>
-                                </div>
+    
+                            <div class="process-step-container bg-white">
+                                <span class="material-icons-round process-icon mb-4">rate_review</span>
+                                <h3 class="text-xl font-bold mb-3">Beri Tanggapan</h3>
+                                <p class="text-lg text-gray-600">
+                                    Anda dapat menanggapi hasil laporan
+                                </p>
                             </div>
                         </div>
                     </div>
-
+    
                     <div class="text-center mt-12">
                         <button id="reportButton" class="gradient-button text-white px-6 py-2">
                             Lapor Sekarang
@@ -315,7 +321,7 @@ export class HomePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createTestimonialsSection() {
         const testimonialCards = this.testimonials
@@ -344,7 +350,7 @@ export class HomePage {
                     <svg class="w-full h-full"><use href="#curved-line"/></svg>
                 </div>
 
-               <div class="container mx-auto px-4 relative z-10">
+                <div class="container mx-auto px-4 relative z-10">
                     <h2 class="section-title">
                         Apa Kata Mereka
                     </h2>
@@ -354,42 +360,23 @@ export class HomePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     attachEventListeners() {
         const reportButton = document.getElementById('reportButton');
         if (reportButton) {
             reportButton.addEventListener('click', () => {
-                window.location.href = '/pelaporan';
+                window.location.href = '#/pelaporan';
             });
         }
-    }
-
-    handleResize() {
-        // Handle any specific resize logic if needed
-    }
+    },
 
     cleanup() {
-        // Remove event listeners and cleanup if needed
-    }
-
-    render() {
-        const content = `
-            ${Navbar()}
-            <main class="min-h-screen">
-                ${this.createHeroSection()}
-                ${this.createIntroSection()}
-                ${this.createInfrastructureSection()}
-                ${this.createStatsSection()}
-                ${this.createProcessSection()}
-                ${this.createTestimonialsSection()}
-            </main>
-            ${Footer()}
-        `;
-
-        const appContainer = document.getElementById('app');
-        if (appContainer) {
-            appContainer.innerHTML = content;
+        const reportButton = document.getElementById('reportButton');
+        if (reportButton) {
+            reportButton.removeEventListener('click', () => {});
         }
     }
-}
+};
+
+export default HomePage;

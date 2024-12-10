@@ -1,37 +1,15 @@
 /* Mobile First - Base styles are mobile by default */
-@media (max-width: 767px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-        padding: 0 1rem;
-    }
+/* Desktop Navbar */
+.desktop-navbar {
+    display: none;
+}
 
-    .section-title {
-        font-size: 1.5rem;
-        margin-bottom: 2.5rem;
-        padding: 0 1rem 1.5rem;
-    }
+.process-steps-mobile {
+    display: block;
+}
 
-    .infrastructure-card {
-        margin: 0 1rem;
-    }
-
-    .process-steps-mobile {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .process-vertical-line {
-        display: block;
-    }
-
-    .mobile-menu {
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .mobile-menu.hidden {
-        transform: translateY(-100%);
-    }
+.process-steps-desktop {
+    display: none;
 }
 
 /* Small devices (landscape phones, 576px and up) */
@@ -77,7 +55,32 @@
     }
 
     .process-step-container {
-        margin-bottom: 0;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-menu {
+        display: none !important;
+    }
+
+    .process-steps-desktop {
+        display: block;
+    }
+
+    .process-step-container:hover {
+        transform: translateY(-5px);
+    }
+
+    .process-steps-mobile {
+        display: none;
+    }
+
+    .desktop-navbar {
+        display: block !important;
     }
 }
 
@@ -96,5 +99,94 @@
     .container {
         max-width: 1140px;
         margin: 0 auto;
+    }
+}
+
+/* Process Section Responsive Styles */
+.process-steps-mobile {
+    display: none; /* Hide by default */
+}
+
+@media (max-width: 767px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 2.5rem;
+        padding: 0 1rem 1.5rem;
+    }
+
+    .infrastructure-card {
+        margin: 0 1rem;
+    }
+
+    .process-steps-mobile {
+        display: block;
+    }
+
+    .process-vertical-line {
+        display: block;
+    }
+
+    .mobile-menu {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .mobile-menu.hidden {
+        transform: translateY(-100%);
+    }
+}
+
+/* Mobile Menu Transitions */
+#mobile-menu {
+    transition: transform 0.3s ease-in-out;
+}
+
+#mobile-menu.open {
+    display: block;
+    transform: translateX(0);
+}
+
+/* Drawer Overlay */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    display: none;
+}
+
+.drawer-overlay.open {
+    display: block;
+}
+
+/* Drawer Transitions */
+.drawer-transition {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Print styles - optional but recommended */
+@media print {
+    .mobile-menu,
+    .drawer-overlay,
+    .process-vertical-line {
+        display: none !important;
+    }
+
+    .desktop-navbar {
+        display: block !important;
+        position: static;
+    }
+
+    .container {
+        max-width: none;
+        margin: 0;
+        padding: 0;
     }
 }

@@ -1,80 +1,87 @@
 import { Navbar } from '../../components/common/Navbar.js';
 import { Footer } from '../../components/common/Footer.js';
 
-export class ArticlePage {
-    constructor() {
-        this.article = {
-            id: 1,
-            title: 'Infrastruktur: Pondasi Kehidupan Modern',
-            excerpt: 'Infrastruktur yang berkualitas adalah kunci pembangunan berkelanjutan, meningkatkan kualitas hidup, dan mendorong pertumbuhan ekonomi masyarakat.',
-            image: '/images/infraTikel.png',
-            category: 'Infrastruktur',
-            content: {
-                principles: [
-                    {
-                        title: 'Berkelanjutan (Sustainability)',
-                        description: 'Menekankan pentingnya memperhatikan dampak lingkungan melalui penggunaan teknologi ramah lingkungan, desain efisien, dan upaya meminimalkan jejak karbon.'
-                    },
-                    {
-                        title: 'Ketahanan (Resilience)',
-                        description: 'Infrastruktur mampu menghadapi berbagai risiko dengan desain fleksibel, sistem pemulihan cepat, dan antisipasi terhadap perubahan.'
-                    },
-                    {
-                        title: 'Aksesibilitas',
-                        description: 'Pentingnya infrastruktur yang mudah diakses semua kalangan, inklusif bagi penyandang disabilitas, dan memiliki konektivitas yang baik.'
-                    },
-                    {
-                        title: 'Efisiensi Biaya',
-                        description: 'Fokus pada perhitungan biaya total kepemilikan, memaksimalkan value for money, dan perencanaan perawatan berkala.'
-                    },
-                    {
-                        title: 'Inovasi Teknologi',
-                        description: 'Mendorong pemanfaatan teknologi mutakhir seperti digitalisasi, sistem cerdas, serta penerapan AI dan IoT.'
-                    },
-                    {
-                        title: 'Keberlanjutan Sosial',
-                        description: 'Memastikan infrastruktur tidak sekadar bangunan fisik, melainkan juga memperhatikan dampak sosial, melibatkan partisipasi masyarakat, menciptakan lapangan kerja, dan mendukung pengembangan ekonomi.'
-                    }
-                ],
-                categories: [
-                    {
-                        title: 'Infrastruktur Perkotaan',
-                        description: 'Jalan, jembatan, gedung pemerintahan, fasilitas umum yang mendukung aktivitas perkotaan.'
-                    },
-                    {
-                        title: 'Infrastruktur Lingkungan',
-                        description: 'Sistem drainase, pengolahan air bersih, pengelolaan sampah, dan infrastruktur ramah lingkungan.'
-                    },
-                    {
-                        title: 'Infrastruktur Sosial',
-                        description: 'Fasilitas kesehatan, pendidikan, ruang publik dan sarana sosial kemasyarakatan.'
-                    }
-                ],
-                participation: {
-                    title: 'Partisipasi Masyarakat dalam Infrastruktur',
-                    description: 'Masyarakat memiliki peran penting dalam pembangunan dan pemeliharaan infrastruktur.',
-                    sections: [
-                        {
-                            title: 'Edukasi dan Kesadaran',
-                            items: [
-                                'Mengikuti sosialisasi',
-                                'Berbagi pengetahuan',
-                                'Menjaga infrastruktur umum'
-                            ]
-                        },
-                        {
-                            title: 'Pelaporan dan Pengawasan',
-                            items: [
-                                'Melaporkan kerusakan infrastruktur',
-                                'Memberikan usulan perbaikan',
-                                'Mengawasi progres pembangunan'
-                            ]
-                        }
-                    ]
+const ArticlePage = {
+    article: {
+        id: 1,
+        title: 'Infrastruktur: Pondasi Kehidupan Modern',
+        excerpt: 'Infrastruktur yang berkualitas adalah kunci pembangunan berkelanjutan, meningkatkan kualitas hidup, dan mendorong pertumbuhan ekonomi masyarakat.',
+        image: '/images/infraTikel.png',
+        category: 'Infrastruktur',
+        content: {
+            principles: [
+                {
+                    title: 'Berkelanjutan (Sustainability)',
+                    description: 'Menekankan pentingnya memperhatikan dampak lingkungan melalui penggunaan teknologi ramah lingkungan, desain efisien, dan upaya meminimalkan jejak karbon.'
+                },
+                {
+                    title: 'Ketahanan (Resilience)',
+                    description: 'Infrastruktur mampu menghadapi berbagai risiko dengan desain fleksibel, sistem pemulihan cepat, dan antisipasi terhadap perubahan.'
+                },
+                {
+                    title: 'Aksesibilitas',
+                    description: 'Pentingnya infrastruktur yang mudah diakses semua kalangan, inklusif bagi penyandang disabilitas, dan memiliki konektivitas yang baik.'
+                },
+                {
+                    title: 'Efisiensi Biaya',
+                    description: 'Fokus pada perhitungan biaya total kepemilikan, memaksimalkan value for money, dan perencanaan perawatan berkala.'
+                },
+                {
+                    title: 'Inovasi Teknologi',
+                    description: 'Mendorong pemanfaatan teknologi mutakhir seperti digitalisasi, sistem cerdas, serta penerapan AI dan IoT.'
+                },
+                {
+                    title: 'Keberlanjutan Sosial',
+                    description: 'Memastikan infrastruktur tidak sekadar bangunan fisik, melainkan juga memperhatikan dampak sosial, melibatkan partisipasi masyarakat, menciptakan lapangan kerja, dan mendukung pengembangan ekonomi.'
                 }
+            ],
+            categories: [
+                {
+                    title: 'Infrastruktur Perkotaan',
+                    description: 'Jalan, jembatan, gedung pemerintahan, fasilitas umum yang mendukung aktivitas perkotaan.'
+                },
+                {
+                    title: 'Infrastruktur Lingkungan',
+                    description: 'Sistem drainase, pengolahan air bersih, pengelolaan sampah, dan infrastruktur ramah lingkungan.'
+                },
+                {
+                    title: 'Infrastruktur Sosial',
+                    description: 'Fasilitas kesehatan, pendidikan, ruang publik dan sarana sosial kemasyarakatan.'
+                }
+            ],
+            participation: {
+                title: 'Partisipasi Masyarakat dalam Infrastruktur',
+                description: 'Masyarakat memiliki peran penting dalam pembangunan dan pemeliharaan infrastruktur.',
+                sections: [
+                    {
+                        title: 'Edukasi dan Kesadaran',
+                        items: [
+                            'Mengikuti sosialisasi',
+                            'Berbagi pengetahuan',
+                            'Menjaga infrastruktur umum'
+                        ]
+                    },
+                    {
+                        title: 'Pelaporan dan Pengawasan',
+                        items: [
+                            'Melaporkan kerusakan infrastruktur',
+                            'Memberikan usulan perbaikan',
+                            'Mengawasi progres pembangunan'
+                        ]
+                    }
+                ]
             }
-        };
-    }
+        }
+    },
+
+    init() {
+        try {
+            this.render();
+            this.scrollToTop();
+        } catch (error) {
+            console.error('Error initializing article page:', error);
+        }
+    },
 
     createHeroSection() {
         return `
@@ -90,7 +97,7 @@ export class ArticlePage {
                             <h1 class="text-3xl md:text-4xl font-bold mb-4">
                                 ${this.article.title}
                             </h1>
-                            <p class="text-gray-600 text-lg mb-6">
+                            <p class="text-600 text-lg mb-6">
                                 ${this.article.excerpt}
                             </p>
                         </div>
@@ -98,7 +105,7 @@ export class ArticlePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createPrinciplesSection() {
         const principleCards = this.article.content.principles.map((principle, index) => `
@@ -106,7 +113,7 @@ export class ArticlePage {
                 <h3 class="text-xl font-semibold mb-3">
                     ${index + 1}. ${principle.title}
                 </h3>
-                <p class="text-gray-600">
+                <p class="text-600">
                     ${principle.description}
                 </p>
             </div>
@@ -124,7 +131,7 @@ export class ArticlePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createCategoriesSection() {
         const categoryCards = this.article.content.categories.map(category => `
@@ -150,7 +157,7 @@ export class ArticlePage {
                 </div>
             </section>
         `;
-    }
+    },
 
     createParticipationSection() {
         const { sections } = this.article.content.participation;
@@ -185,14 +192,14 @@ export class ArticlePage {
                         ${sectionCards}
                     </div>
                     <div class="text-center mt-12">
-                        <a href="#/pelaporan" class="cta-button">
+                        <a href="#/pelaporan" class="gradient-button text-white px-6 py-2">
                             Lapor Sekarang
                         </a>
                     </div>
                 </div>
             </section>
         `;
-    }
+    },
 
     render() {
         const content = `
@@ -210,21 +217,17 @@ export class ArticlePage {
         if (appContainer) {
             appContainer.innerHTML = content;
         }
-    }
+    },
 
     scrollToTop() {
         window.scrollTo({
             top: 0,
             behavior: 'instant'
         });
-    }
+    },
 
-    init() {
-        try {
-            this.render();
-            this.scrollToTop();
-        } catch (error) {
-            console.error('Error initializing article page:', error);
-        }
+    cleanup() {
     }
-}
+};
+
+export default ArticlePage;

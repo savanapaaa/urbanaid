@@ -1,68 +1,78 @@
-// client/src/App.js
-
-import { HomePage } from './pages/Dashboard/Home.js';
-import { ArticlePage } from './pages/Dashboard/Article.js';
 import DrawerInitiator from './utils/drawer-initiator.js';
 import UrlParser from './utils/url-parser.js';
+import routes from './routes/routes.js';
 
-class App {
-    constructor() {
-        this.routes = {
-            '/': HomePage,
-            '/artikel': ArticlePage,
-            // Add more routes here
-        };
-
+const App = {
+    init() {
+        this.routes = routes;
         this.page = null;
         this.currentPath = '/';
-    }
+        this._initializeApp();
+        return this;
+    },
 
-    async init() {
-        try {
-            // Handle initial route
-            await this.renderPage();
-
-            // Add event listeners for navigation
-            window.addEventListener('hashchange', async () => {
-                await this.renderPage();
-            });
-
-            window.addEventListener('load', async () => {
-                await this.renderPage();
-            });
-        } catch (error) {
-            console.error('Error initializing app:', error);
-        }
-    }
+    _initializeApp() {
+        const loadingElement = document.createElement('div');
+        loadingElement.id = 'page-loading';
+        loadingElement.className = 'hidden fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50';
+        loadingElement.innerHTML = '<div class="animate-spin rounded-full h-12 w-12 border-4 border-teal-500 border-t-transparent"></div>';
+        document.body.appendChild(loadingElement);
+    },
 
     async renderPage() {
         try {
-            // Clear previous page content if exists
+            this._showLoading();
+
             if (this.page && this.page.cleanup) {
-                this.page.cleanup();
+                await this.page.cleanup();
             }
 
-            // Get current URL and map to route
-            const path = window.location.hash ? window.location.hash.slice(1) : '/';
-            console.log('Current path:', path);
+            const url = UrlParser.parseActiveUrlWithCombiner();
+            const page = this._getPage(url);
 
-            // Initialize new page
-            const Page = this.routes[path] || this.routes['/'];
-            this.page = new Page();
+            if (!page) {
+                throw new Error('Page not found');
+            }
+
+            this.page = page;
             
-            // Initialize drawer after page is rendered
-            await this.page.init();
+            if (this.page.init) {
+                await this.page.init();
+            }
+            
             this._initializeDrawer();
 
-            this.currentPath = path;
+            this.currentPath = url;
+            this._hideLoading();
+
         } catch (error) {
             console.error('Error rendering page:', error);
-            // Fallback to home page if error occurs
-            if (this.currentPath !== '/') {
-                window.location.hash = '#/';
-            }
+            this._handleError(error);
         }
-    }
+    },
+
+    _getPage(url) {
+        const urlParts = url.split('/');
+        const routes = this.routes;
+
+        if (routes[url]) {
+            return routes[url];
+        }
+
+        for (const route in routes) {
+            const routeParts = route.split('/');
+            if (routeParts.length !== urlParts.length) continue;
+
+            const match = routeParts.every((part, index) => {
+                if (part.startsWith(':')) return true;
+                return part === urlParts[index];
+            });
+
+            if (match) return routes[route];
+        }
+
+        return routes['/'];
+    },
 
     _initializeDrawer() {
         const button = document.querySelector('#mobile-menu-button');
@@ -73,25 +83,44 @@ class App {
             DrawerInitiator.init({
                 button,
                 drawer,
-                content
-            });
-        } else {
-            console.warn('Some drawer elements not found:', {
-                button: !!button,
-                drawer: !!drawer,
-                content: !!content
+                content,
+                closeOnEscape: true,
+                closeOnOutsideClick: true
             });
         }
+    },
+
+    _showLoading() {
+        const loading = document.getElementById('page-loading');
+        if (loading) loading.classList.remove('hidden');
+    },
+
+    _hideLoading() {
+        const loading = document.getElementById('page-loading');
+        if (loading) loading.classList.add('hidden');
+    },
+
+    _handleError(error) {
+        this._hideLoading();
+        
+        const errorContainer = document.createElement('div');
+        errorContainer.className = 'fixed inset-x-0 top-4 flex items-center justify-center';
+        errorContainer.innerHTML = `
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline"> ${error.message}</span>
+            </div>
+        `;
+        document.body.appendChild(errorContainer);
+
+        setTimeout(() => {
+            errorContainer.remove();
+        }, 5000);
+
+        if (this.currentPath !== '/') {
+            window.location.hash = '#/';
+        }
     }
-}
-
-// Export a function that creates and initializes the app
-const initApp = () => {
-    const app = new App();
-    app.init();
 };
-
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', initApp);
 
 export default App;
