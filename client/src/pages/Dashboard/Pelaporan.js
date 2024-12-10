@@ -2,6 +2,7 @@ import { Navbar } from '../../components/common/Navbar.js';
 import { Footer } from '../../components/common/Footer.js';
 import LaporanAktif from '../Reports/LaporanAktif.js';
 import Riwayat from '../Reports/Riwayat.js';
+import Profile from '../Profile/Profile.js';
 
 const PelaporanPage = {
     formData: {
@@ -103,12 +104,13 @@ const PelaporanPage = {
                 }
             }, 0);
         } else if (currentHash === '#/pelaporan/profile') {
-            pageContent += `
-                <div class="profile-content">
-                    <h2>Profile Pengguna</h2>
-                    <p>Halaman Profile sedang dalam pengembangan.</p>
-                </div>
-            `;
+            pageContent += Profile.render();
+            
+            setTimeout(() => {
+                if (Profile.afterRender) {
+                    Profile.afterRender();
+                }
+            }, 0);
         } else {
             pageContent += `
                 <form id="laporan-form" class="form-card" novalidate>

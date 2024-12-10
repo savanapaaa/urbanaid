@@ -112,12 +112,12 @@ const RiwayatLaporan = {
         return `
             <div class="laporan-aktif-container">
                 <div class="main-content">
-                    <h2 class="section-title">
+                    <h2 class="laporan-aktif-title">
                         <span class="material-icons-round">dashboard</span>
                         Riwayat Laporan
                     </h2>
                     
-                    <div class="status-filter">
+                    <div class="laporan-aktif-filter">
                         <button class="filter-btn active" data-status="all" onclick="RiwayatLaporan.filterReports('all')">
                             <span class="material-icons-round">all_inbox</span>
                             Semua (${this.data.length})

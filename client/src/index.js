@@ -7,6 +7,8 @@ import './styles/swal.css';
 import './styles/laporanaktif.css'; 
 // import './styles/riwayat.css';  
 import './styles/detail.css';  
+import './styles/profile.css';
+import './styles/tentangkami.css';
 
 // Import App
 import App from './App';

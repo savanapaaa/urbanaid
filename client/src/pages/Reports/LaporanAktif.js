@@ -132,12 +132,12 @@ class LaporanAktif {
         return `
             <div class="laporan-aktif-container">
                 <div class="main-content">
-                    <h2 class="section-title">
+                    <h2 class="laporan-aktif-title">
                         <span class="material-icons-round">dashboard</span>
                         Laporan Aktif
                     </h2>
                     
-                    <div class="status-filter">
+                    <div class="laporan-aktif-filter">
                         <button class="filter-btn active" data-status="all" onclick="laporanAktif.filterReports('all')">
                             <span class="material-icons-round">all_inbox</span>
                             Semua (${this.data.length})
@@ -236,7 +236,7 @@ class LaporanAktif {
                                 ${report.buktiLampiran}
                             </div>
                             <div class="attachment-preview">
-                                <img src="path/to/images/${report.buktiLampiran}" alt="Bukti Lampiran" 
+                                <img src="/images/${report.buktiLampiran}" alt="Bukti Lampiran" 
                                      onerror="this.src='/api/placeholder/800/400';this.onerror=null;">
                             </div>
                         </div>
@@ -417,6 +417,7 @@ class LaporanAktif {
     }
 }
 
+// Initialize the component
 const laporanAktif = new LaporanAktif();
 window.laporanAktif = laporanAktif;
 

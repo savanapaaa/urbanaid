@@ -85,7 +85,7 @@ const ArticlePage = {
 
     createHeroSection() {
         return `
-            <section class="relative py-12 bg-white">
+            <section class="relative py-8 md:py-12 pt-12 md:pt-20 bg-white">
                 <div class="container mx-auto px-4">
                     <div class="flex flex-col md:flex-row gap-8">
                         <div class="w-full md:w-1/2">
