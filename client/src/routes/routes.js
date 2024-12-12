@@ -4,6 +4,11 @@ import PelaporanPage from "../pages/Dashboard/Pelaporan";
 import DetailLaporan from "../pages/Reports/DetailLaporan";
 import TentangKami from "../pages/Dashboard/TentangKami";
 import RegisterPage from "../pages/register";
+import LoginPage from "../pages/login";
+// Import halaman admin
+import AdminPage from "../pages/Admin/Admin";
+import DetailAdmin from "../pages/Admin/DetailAdmin";
+import RiwayatAdmin from "../pages/Admin/RiwayatAdmin";
 
 const routes = {
   "/": HomePage,
@@ -16,6 +21,11 @@ const routes = {
   "/pelaporan/riwayat/:id": DetailLaporan,
   "/tentang-kami": TentangKami,
   "/register": RegisterPage,
+  '/login': LoginPage,
+  // Tambahkan route untuk admin
+  "/admin": AdminPage,
+  "/admin/laporan/:id": DetailAdmin,
+  "/admin/riwayat": RiwayatAdmin,
 };
 
 export default routes;

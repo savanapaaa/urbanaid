@@ -81,14 +81,14 @@ const HomePage = {
                             <p class="text-lg mb-8">
                                 Dengan UrbanAid, Anda memiliki kekuatan untuk melaporkan kerusakan infrastruktur secara langsung, dan membantu menciptakan lingkungan yang lebih aman dan nyaman bagi semua orang.
                             </p>
-                            <div class="flex flex-row justify-center md:justify-start space-x-4">
-                                <button class="gradient-border-button px-6 py-2">
-                                    Masuk
-                                </button>
-                                <button class="gradient-button text-white px-6 py-2">
-                                    Daftar
-                                </button>
-                            </div>
+                        <div class="flex flex-row justify-center md:justify-start space-x-4">
+                            <button onclick="window.location.href='#/login'" class="gradient-border-button px-6 py-2">
+                                Masuk
+                            </button>
+                            <button onclick="window.location.href='#/register'" class="gradient-button text-white px-6 py-2">
+                                Daftar
+                            </button>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -366,10 +366,20 @@ const HomePage = {
         const reportButton = document.getElementById('reportButton');
         if (reportButton) {
             reportButton.addEventListener('click', () => {
-                window.location.href = '#/pelaporan';
+                // Cek apakah user sudah login (misalnya dengan memeriksa token di localStorage)
+                const token = localStorage.getItem('token');
+                
+                if (token) {
+                    // Jika sudah login, arahkan ke halaman pelaporan
+                    window.location.href = '#/pelaporan';
+                } else {
+                    // Jika belum login, arahkan ke halaman register
+                    window.location.href = '#/register';
+                }
             });
         }
     },
+    
 
     cleanup() {
         const reportButton = document.getElementById('reportButton');

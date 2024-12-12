@@ -19,6 +19,30 @@ const App = {
         document.body.appendChild(loadingElement);
     },
 
+    _checkAuth(url) {
+        const token = localStorage.getItem('token');
+        const userRole = localStorage.getItem('role');
+        
+        const protectedRoutes = ['/pelaporan', '/pelaporan/beranda', '/pelaporan/laporanaktif', '/pelaporan/riwayat', '/pelaporan/profile'];
+        
+        const adminRoutes = ['/admin', '/admin/laporan', '/admin/riwayat'];
+     
+        if (adminRoutes.some(route => url.startsWith(route))) {
+            if (!token || userRole !== 'admin') {
+                window.location.hash = '#/';
+                return false;
+            }
+            return true;
+        }
+        
+        if (protectedRoutes.some(route => url.startsWith(route)) && !token) {
+            window.location.hash = '#/login';
+            return false;
+        }
+        
+        return true;
+     },
+
     async renderPage() {
         try {
             this._showLoading();
@@ -28,6 +52,12 @@ const App = {
             }
 
             const url = UrlParser.parseActiveUrlWithCombiner();
+            
+            if (!this._checkAuth(url)) {
+                this._hideLoading();
+                return;
+            }
+
             const page = this._getPage(url);
 
             if (!page) {

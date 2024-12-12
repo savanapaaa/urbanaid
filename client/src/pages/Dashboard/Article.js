@@ -192,9 +192,11 @@ const ArticlePage = {
                         ${sectionCards}
                     </div>
                     <div class="text-center mt-12">
-                        <a href="#/pelaporan" class="gradient-button text-white px-6 py-2">
+                        <button 
+                            id="reportButtonArticle" 
+                            class="gradient-button text-white px-6 py-2">
                             Lapor Sekarang
-                        </a>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -217,6 +219,26 @@ const ArticlePage = {
         if (appContainer) {
             appContainer.innerHTML = content;
         }
+
+        this.attachEventListeners();
+    },
+
+    attachEventListeners() {
+        const reportButton = document.getElementById('reportButtonArticle');
+        if (reportButton) {
+            reportButton.addEventListener('click', () => {
+                // Cek apakah user sudah login
+                const token = localStorage.getItem('token');
+                
+                if (token) {
+                    // Jika sudah login, arahkan ke halaman pelaporan
+                    window.location.href = '#/pelaporan';
+                } else {
+                    // Jika belum login, arahkan ke halaman register
+                    window.location.href = '#/register';
+                }
+            });
+        }
     },
 
     scrollToTop() {
@@ -227,6 +249,10 @@ const ArticlePage = {
     },
 
     cleanup() {
+        const reportButton = document.getElementById('reportButtonArticle');
+        if (reportButton) {
+            reportButton.removeEventListener('click', () => {});
+        }
     }
 };
 
