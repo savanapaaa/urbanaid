@@ -46,8 +46,8 @@ const Profile = {
                     <div class="flex flex-col items-center justify-center">
                         <div class="relative mb-4">
                             <div class="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center">
-                                <span class="material-icons-round text-white text-4xl">account_circle</span>
-                            </div>
+                                <span class="material-icons-round" style="font-size: 52px; color: #ffffff;">account_circle</span>
+                            </div>                            
                             <button id="changeAvatarBtn" class="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-lg hover:bg-gray-100 transition-all">
                                 <span class="material-icons-round text-[#00899B]">photo_camera</span>
                             </button>

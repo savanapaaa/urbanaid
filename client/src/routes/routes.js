@@ -9,6 +9,10 @@ import LoginPage from "../pages/login";
 import AdminPage from "../pages/Admin/Admin";
 import DetailAdmin from "../pages/Admin/DetailAdmin";
 import RiwayatAdmin from "../pages/Admin/RiwayatAdmin";
+import LaporanMasuk from "../pages/Admin/LaporanMasuk";
+import DetailRiwayat from "../pages/Admin/DetailRiwayat";
+import ManagementUser from "../pages/Admin/ManagementUser";
+import ManagementAdmin from "../pages/Admin/ManagementAdmin";
 
 const routes = {
   "/": HomePage,
@@ -24,8 +28,12 @@ const routes = {
   '/login': LoginPage,
   // Tambahkan route untuk admin
   "/admin": AdminPage,
+  "/admin/laporan": LaporanMasuk, 
   "/admin/laporan/:id": DetailAdmin,
   "/admin/riwayat": RiwayatAdmin,
+  "/admin/riwayat/:id": DetailRiwayat,
+  "/admin/users": ManagementUser,
+  "/admin/admins": ManagementAdmin,
 };
 
 export default routes;

@@ -43,27 +43,35 @@ const App = {
         return true;
      },
 
-    async renderPage() {
+     async renderPage() {
         try {
-            this._showLoading();
-
+            // Simpan waktu mulai
+            const startTime = Date.now();
+            let loadingTimeout;
+    
+            // Tunda menampilkan loading selama 300ms
+            loadingTimeout = setTimeout(() => {
+                this._showLoading();
+            }, 300);
+    
             if (this.page && this.page.cleanup) {
                 await this.page.cleanup();
             }
-
+    
             const url = UrlParser.parseActiveUrlWithCombiner();
             
             if (!this._checkAuth(url)) {
+                clearTimeout(loadingTimeout);
                 this._hideLoading();
                 return;
             }
-
+    
             const page = this._getPage(url);
-
+    
             if (!page) {
                 throw new Error('Page not found');
             }
-
+    
             this.page = page;
             
             if (this.page.init) {
@@ -71,10 +79,18 @@ const App = {
             }
             
             this._initializeDrawer();
-
+    
             this.currentPath = url;
-            this._hideLoading();
-
+    
+            // Batalkan loading jika prosesnya cepat
+            const processTime = Date.now() - startTime;
+            clearTimeout(loadingTimeout);
+    
+            // Hanya sembunyikan loading jika memang sudah muncul
+            if (processTime >= 300) {
+                this._hideLoading();
+            }
+    
         } catch (error) {
             console.error('Error rendering page:', error);
             this._handleError(error);

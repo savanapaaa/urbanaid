@@ -1,3 +1,4 @@
+import AuthService from '../services/auth-service';
 class FormRegister extends HTMLElement {
   constructor() {
     super();
@@ -218,7 +219,7 @@ class FormRegister extends HTMLElement {
  
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
- 
+    
       const nameError = this.validateName(fullnameInput.value.trim());
       if (nameError) {
         Swal.fire({
@@ -229,7 +230,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
- 
+    
       const emailError = this.validateEmail(emailInput.value.trim());
       if (emailError) {
         Swal.fire({
@@ -240,7 +241,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
- 
+    
       const passwordError = this.validatePassword(passwordInput.value);
       if (passwordError) {
         Swal.fire({
@@ -251,7 +252,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
- 
+    
       if (!termsCheckbox.checked) {
         Swal.fire({
           title: 'Syarat dan Ketentuan',
@@ -261,44 +262,54 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
- 
+    
+      let loadingSwal;
       try {
-        await Swal.fire({
+        loadingSwal = Swal.fire({
           title: 'Memproses Pendaftaran',
           html: 'Mohon tunggu sebentar...',
           allowOutsideClick: false,
           showConfirmButton: false,
-          willOpen: () => {
+          didOpen: () => {
             Swal.showLoading();
           }
         });
- 
-        await new Promise(resolve => setTimeout(resolve, 2000));
- 
+    
         const userData = {
-          fullname: fullnameInput.value.trim(),
+          nama: fullnameInput.value.trim(),
           email: emailInput.value.trim(),
           password: passwordInput.value
         };
- 
-        console.log('User Data:', userData);
- 
-        await Swal.fire({
-          title: 'Berhasil!',
-          text: 'Akun Anda telah berhasil didaftarkan',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        });
- 
-        form.reset();
-        window.location.href = '#/login';
- 
+    
+        const response = await AuthService.register(userData);
+    
+        if (loadingSwal) {
+          loadingSwal.close();
+        }
+    
+        if (response.status === 'success') {
+          await Swal.fire({
+            title: 'Berhasil!',
+            text: 'Akun berhasil didaftarkan. Silakan login.',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          });
+    
+          form.reset();
+          window.location.hash = '#/login';
+        } else {
+          throw new Error(response.message || 'Terjadi kesalahan saat mendaftar');
+        }
       } catch (error) {
         console.error('Registration Error:', error);
         
-        Swal.fire({
+        if (loadingSwal) {
+          loadingSwal.close();
+        }
+        
+        await Swal.fire({
           title: 'Gagal!',
-          text: 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
+          text: error.message || 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
           icon: 'error',
           confirmButtonText: 'Ok'
         });

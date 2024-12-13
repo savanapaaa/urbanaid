@@ -1,26 +1,47 @@
 import { Navbar } from '../../components/common/Navbar.js';
 import { Footer } from '../../components/common/Footer.js';
+import StatisticService from '../../services/statistic-service.js';
 
 const HomePage = {
     stats: {
-        active: 342,
-        completed: 127,
-        pending: 58
+        active: 0,
+        completed: 0,
+        pending: 0
     },
     
-    testimonials: [
-        { name: "John Carter", rating: 5, text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit." },
-        { name: "John Carter", rating: 5, text: "The best Workflow Templates" },
-        { name: "John Carter", rating: 5, text: "The best Workflow Templates" }
-    ],
+    testimonials: [],
 
-    init() {
+    async init() {
         try {
-            this.loadSvgSprites();
-            this.render();
+            this.render(); 
+            await Promise.all([
+                this.loadSvgSprites(),
+                this.loadData()
+            ]); 
+            this.render(); 
             this.attachEventListeners();
         } catch (error) {
             console.error('Error initializing home page:', error);
+        }
+    },
+
+    async loadData() {
+        try {
+            const statsResponse = await StatisticService.getReportStatistics();
+            if (statsResponse.status === 'success') {
+                this.stats = statsResponse.data;
+            }
+
+            const reviewsResponse = await StatisticService.getReviews();
+            if (reviewsResponse.status === 'success') {
+                this.testimonials = reviewsResponse.data.map(review => ({
+                    name: review.user_name,
+                    rating: review.rating,
+                    text: review.review_text
+                }));
+            }
+        } catch (error) {
+            console.error('Error loading data:', error);
         }
     },
 
@@ -58,6 +79,8 @@ const HomePage = {
     },
 
     createHeroSection() {
+        const isLoggedIn = localStorage.getItem('token') !== null;
+        
         return `
             <section class="hero-section relative overflow-hidden">
                 <div class="decorative-element bottom-[20%] -left-5 w-32 h-32 decoration-teal opacity-20">
@@ -66,7 +89,7 @@ const HomePage = {
                 <div class="hidden md:block decorative-element top-[30%] right-[10%] w-16 h-16 decoration-teal rotate-45 animate-float">
                     <svg class="w-full h-full"><use href="#dots"/></svg>
                 </div>
-
+    
                 <div class="container mx-auto px-4">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div class="w-full md:w-1/2 md:order-2">
@@ -75,20 +98,22 @@ const HomePage = {
                             </div>
                         </div>
                         <div class="w-full md:w-1/2 text-center md:text-left md:order-1">
-                            <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
                                 Welcome to <span class="text-teal-600">UrbanAid</span>
                             </h1>
-                            <p class="text-lg mb-8">
+                            <p class="text-base sm:text-lg mb-6 md:mb-8 leading-relaxed">
                                 Dengan UrbanAid, Anda memiliki kekuatan untuk melaporkan kerusakan infrastruktur secara langsung, dan membantu menciptakan lingkungan yang lebih aman dan nyaman bagi semua orang.
                             </p>
-                        <div class="flex flex-row justify-center md:justify-start space-x-4">
-                            <button onclick="window.location.href='#/login'" class="gradient-border-button px-6 py-2">
-                                Masuk
-                            </button>
-                            <button onclick="window.location.href='#/register'" class="gradient-button text-white px-6 py-2">
-                                Daftar
-                            </button>
-                        </div>
+                            ${!isLoggedIn ? `
+                                <div class="flex flex-row justify-center md:justify-start space-x-4">
+                                    <button onclick="window.location.href='#/login'" class="gradient-border-button px-4 sm:px-6 py-2 text-sm sm:text-base">
+                                        Masuk
+                                    </button>
+                                    <button onclick="window.location.href='#/register'" class="gradient-button text-white px-4 sm:px-6 py-2 text-sm sm:text-base">
+                                        Daftar
+                                    </button>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
@@ -98,20 +123,20 @@ const HomePage = {
 
     createIntroSection() {
         return `
-            <section class="bg-white py-16 md:py-20 relative overflow-hidden">
+            <section class="bg-white py-12 md:py-16 lg:py-20 relative overflow-hidden">
                 <div class="decorative-element top-20 -right-5 w-24 h-24 decoration-teal rotate-12 animate-float">
                     <svg class="w-full h-full"><use href="#curved-line"/></svg>
                 </div>
                 <div class="hidden md:block decorative-element bottom-[30%] -left-15 w-24 h-24 decoration-teal opacity-20 animate-pulse">
                     <svg class="w-full h-full"><use href="#sparkle"/></svg>
                 </div>
-
+    
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="max-w-6xl mx-auto">
-                        <h2 class="section-title">
+                        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12">
                             Pelaporan Infrastruktur
                         </h2>
-                        <p class="text-lg text-center leading-relaxed">
+                        <p class="text-base sm:text-lg leading-relaxed text-center">
                             UrbanAid merupakan solusi inovatif untuk mengatasi fragmentasi pengelolaan pengaduan pelayanan publik di Indonesia. 
                             Saat ini, sistem pengaduan di berbagai organisasi pemerintahan masih terpisah-pisah, 
                             tidak terkoordinasi dengan baik, dan berpotensi menimbulkan duplikasi atau terabaikannya laporan masyarakat. 
@@ -126,17 +151,17 @@ const HomePage = {
 
     createInfrastructureSection() {
         return `
-            <section class="py-16 md:py-20 relative overflow-hidden">
+            <section class="py-12 md:py-16 lg:py-20 relative overflow-hidden">
                 <div class="decorative-element bottom-[10%] right-[5%] w-24 h-24 decoration-teal animate-float">
                     <svg class="w-full h-full"><use href="#sparkle"/></svg>
                 </div>
                 <div class="hidden md:block decorative-element top-[30%] left-[10%] w-20 h-20 decoration-teal rotate-45">
                     <svg class="w-full h-full"><use href="#dots"/></svg>
                 </div>
-
+    
                 <div class="container mx-auto px-4 relative z-10">
                     <div class="infrastructure-card">
-                        <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">
+                        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-center">
                             Infrastruktur: Pondasi Kehidupan Modern
                         </h2>
                         <div class="mb-6">
@@ -145,14 +170,14 @@ const HomePage = {
                                 class="w-full max-w-2xl mx-auto rounded-lg shadow-md">
                         </div>
                         <div class="space-y-4 mb-8">
-                            <p class="text-lg text-center">
+                            <p class="text-base sm:text-lg text-center leading-relaxed">
                                 Infrastruktur yang berkualitas adalah kunci pembangunan berkelanjutan, meningkatkan kualitas hidup, dan mendorong pertumbuhan ekonomi masyarakat. 
                                 Dengan adanya infrastruktur yang baik, mobilitas masyarakat menjadi lebih mudah, kegiatan ekonomi berjalan lancar, dan pelayanan publik dapat diberikan secara optimal.
                             </p>
                         </div>
                         <div class="text-center">
                             <button 
-                                class="gradient-button text-white px-6 py-2" 
+                                class="gradient-button text-white px-4 sm:px-6 py-2 text-sm sm:text-base" 
                                 onclick="window.location.href='#/artikel';">
                                 Pelajari Selengkapnya
                             </button>
@@ -324,32 +349,39 @@ const HomePage = {
     },
 
     createTestimonialsSection() {
-        const testimonialCards = this.testimonials
-        .map(testimonial => `
-            <div class="testimonial-card">
-                <p class="testimonial-text mb-6">${testimonial.text}</p>
-                <div class="flex items-center">
-                    <div class="w-10 h-10 bg-gray-200 rounded-full mr-4"></div>
-                    <div>
-                        <h4 class="testimonial-name">${testimonial.name}</h4>
-                        <div class="flex text-yellow-400 text-sm">
-                            ${'★'.repeat(testimonial.rating)}
+        const testimonialCards = this.testimonials.length > 0 
+            ? this.testimonials.map(testimonial => `
+                <div class="testimonial-card flex flex-col h-full">
+                    <div class="flex-grow mb-6">
+                        <p class="testimonial-text">${testimonial.text}</p>
+                    </div>
+                    
+                    <!-- Profile section -->
+                    <div class="flex items-center mt-auto">
+                        <!-- Container dengan minimum 44x44 untuk aksesibilitas -->
+                        <div class="min-w-[44px] min-h-[44px] flex items-center justify-center">
+                            <!-- Icon dengan ukuran yang proporsional -->
+                            <span class="material-icons-round" style="font-size: 48px; color: #4B5563;">account_circle</span>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="testimonial-name text-lg font-semibold">${testimonial.name}</h4>
+                            <div class="flex text-yellow-400 gap-0.5">
+                                ${Array(testimonial.rating).fill('<span class="material-icons-round">star</span>').join('')}
+                                ${Array(5 - testimonial.rating).fill('<span class="material-icons-round">star_outline</span>').join('')}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `)
-        .join('');
-
+            `).join('')
+            : `<div class="col-span-3 text-center text-gray-500">
+                    <div class="min-w-[44px] min-h-[44px] flex items-center justify-center mx-auto">
+                        <span class="material-icons-round" style="font-size: 48px;">rate_review</span>
+                    </div>
+                    <p class="text-lg">Belum ada ulasan</p>
+               </div>`;
+    
         return `
             <section class="bg-gray-50 py-16 md:py-20 relative overflow-hidden">
-                <div class="hidden md:block decorative-element top-10 left-10 w-32 h-32 decoration-teal animate-float">
-                    <svg class="w-full h-full"><use href="#dots"/></svg>
-                </div>
-                <div class="decorative-element bottom-20 right-10 w-24 h-24 decoration-teal rotate-12">
-                    <svg class="w-full h-full"><use href="#curved-line"/></svg>
-                </div>
-
                 <div class="container mx-auto px-4 relative z-10">
                     <h2 class="section-title">
                         Apa Kata Mereka
@@ -366,14 +398,11 @@ const HomePage = {
         const reportButton = document.getElementById('reportButton');
         if (reportButton) {
             reportButton.addEventListener('click', () => {
-                // Cek apakah user sudah login (misalnya dengan memeriksa token di localStorage)
                 const token = localStorage.getItem('token');
                 
                 if (token) {
-                    // Jika sudah login, arahkan ke halaman pelaporan
                     window.location.href = '#/pelaporan';
                 } else {
-                    // Jika belum login, arahkan ke halaman register
                     window.location.href = '#/register';
                 }
             });

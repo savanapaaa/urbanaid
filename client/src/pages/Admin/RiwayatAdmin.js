@@ -1,202 +1,198 @@
+// src/pages/Admin/RiwayatAdmin.js
+import Sidebar from '../../components/admin/Sidebar.js';
+import '../../styles/admin.css';
 
-import { Footer } from '../../components/common/Footer.js';
-
-const RiwayatAdminPage = {
-    data: [],
-    
-    init() {
-        this.cacheDOM();
-        this.fetchReportHistory();
-        this.bindEvents();
-    },
-
-    cacheDOM() {
-        this.filterButtons = document.querySelectorAll('.filter-btn');
-        this.reportListContainer = document.querySelector('.laporan-list');
-    },
-
-    bindEvents() {
-        this.filterButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const status = e.currentTarget.dataset.status;
-                this.filterReports(status);
-            });
-        });
-    },
-
-    async fetchReportHistory() {
+const RiwayatAdmin = {
+    async init() {
         try {
-            const response = await fetch('/api/reports/history');
-            this.data = await response.json();
-            this.renderReports(this.data);
+            await this.render();
+            await this.loadReports();
+            Sidebar.afterRender();
+            this.initializeEventListeners();
         } catch (error) {
-            console.error('Error fetching report history:', error);
-            this.showErrorNotification('Gagal memuat riwayat laporan');
+            console.error('Error in RiwayatAdmin init:', error);
         }
     },
 
-    renderReports(reports) {
-        this.reportListContainer.innerHTML = reports.map(report => this.createReportCard(report)).join('');
-    },
+    async loadReports() {
+        try {
+            // Dummy data
+            const reports = [
+                {
+                    id: 'LP001',
+                    nama: 'John Doe',
+                    judul: 'Jalan Rusak di Komplek Pasar',
+                    jenisInfrastruktur: 'Infrastruktur Perkotaan',
+                    deskripsi: 'Terdapat lubang besar yang membahayakan pengendara motor',
+                    tanggalKejadian: '2024-03-15',
+                    tanggalSelesai: '2024-03-17',
+                    alamat: 'Jl. Pasar Baru No. 123',
+                    status: 'Diterima',
+                    keteranganLaporan: 'Laporan telah ditindaklanjuti dan perbaikan selesai dilakukan'
+                },
+                {
+                    id: 'LP002',
+                    nama: 'Sarah Wilson',
+                    judul: 'Lampu Taman Mati',
+                    jenisInfrastruktur: 'Infrastruktur Lingkungan',
+                    deskripsi: 'Semua lampu taman tidak menyala sejak seminggu lalu',
+                    tanggalKejadian: '2024-03-14',
+                    tanggalSelesai: '2024-03-16',
+                    alamat: 'Taman Kota Blok A',
+                    status: 'Ditolak',
+                    keteranganLaporan: 'Lampu dalam masa perbaikan rutin oleh Dinas Pertamanan'
+                }
+            ];
 
-    createReportCard(report) {
-        return `
-            <div class="laporan-card ${this.getStatusClass(report.status)}" data-status="${report.status}">
-                <div class="card-header">
-                    <div class="report-id">${report.id}</div>
-                    <div class="report-status ${report.status}">
-                        ${this.formatStatus(report.status)}
-                    </div>
-                </div>
-                <div class="card-body">
-                    <h3>${report.judul}</h3>
-                    <div class="report-details">
-                        <div class="detail-item">
-                            <span class="label">Jenis Infrastruktur:</span>
-                            ${report.jenisInfrastruktur}
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Tanggal Kejadian:</span>
-                            ${this.formatDate(report.tanggalKejadian)}
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Alamat:</span>
-                            ${report.alamat}
-                        </div>
-                    </div>
-                    <p class="report-description">${report.deskripsi}</p>
-                </div>
-                <div class="card-footer">
-                    <button class="btn-detail" onclick="RiwayatAdminPage.showReportDetail('${report.id}')">
-                        Lihat Detail
-                    </button>
-                    ${this.renderAttachmentButton(report.buktiLampiran)}
-                </div>
-            </div>
-        `;
-    },
-
-    renderAttachmentButton(attachment) {
-        return attachment ? `
-            <button class="btn-attachment" onclick="RiwayatAdminPage.viewAttachment('${attachment}')">
-                Lihat Lampiran
-            </button>
-        ` : '';
-    },
-
-    formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    },
-
-    formatStatus(status) {
-        switch(status) {
-            case 'selesai':
-                return 'Selesai';
-            case 'ditolak':
-                return 'Ditolak';
-            default:
-                return 'Proses';
+            this.updateReportsTable(reports);
+        } catch (error) {
+            console.error('Error loading reports:', error);
         }
     },
 
-    getStatusClass(status) {
-        switch(status) {
-            case 'selesai':
-                return 'status-completed';
-            case 'ditolak':
-                return 'status-rejected';
-            default:
-                return 'status-pending';
-        }
-    },
+    updateReportsTable(reports) {
+        const tbody = document.querySelector('#reports-table tbody');
+        if (!tbody) return;
 
-    filterReports(status) {
-        // Update filter button active state
-        this.filterButtons.forEach(button => {
-            button.classList.toggle('active', button.dataset.status === status);
-        });
+        const statusFilter = document.getElementById('statusFilter').value;
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
         // Filter reports
-        const reportCards = this.reportListContainer.querySelectorAll('.laporan-card');
-        reportCards.forEach(card => {
-            const show = status === 'all' || card.dataset.status === status;
-            card.style.display = show ? 'block' : 'none';
+        const filteredReports = reports.filter(report => {
+            const matchStatus = statusFilter ? report.status === statusFilter : true;
+            const matchSearch = searchTerm ? 
+                Object.values(report).some(value => 
+                    value.toString().toLowerCase().includes(searchTerm)
+                ) : true;
+            return matchStatus && matchSearch;
         });
 
-        // Update count for filter buttons
-        this.updateFilterCounts();
+        tbody.innerHTML = filteredReports.map(report => `
+            <tr class="border-b border-gray-200 hover:bg-gray-50">
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">${report.id}</td>
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">${report.nama}</td>
+                <td class="px-6 py-4 text-[#002F35]">
+                    <div class="max-w-[200px] line-clamp-1">${report.judul}</div>
+                </td>
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">${report.jenisInfrastruktur}</td>
+                <td class="px-6 py-4 text-[#002F35]">
+                    <div class="max-w-[200px] line-clamp-1">${report.deskripsi}</div>
+                </td>
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">${report.tanggalKejadian}</td>
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">${report.tanggalSelesai}</td>
+                <td class="px-6 py-4 text-[#002F35]">
+                    <div class="max-w-[200px] line-clamp-1">${report.alamat}</div>
+                </td>
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">
+                    <span class="px-2 py-1 rounded-full text-xs ${
+                        report.status === 'Diterima' ? 'bg-green-100 text-green-800' :
+                        'bg-red-100 text-red-800'
+                    }">
+                        ${report.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-[#002F35] whitespace-nowrap">
+                    <a href="#/admin/riwayat/${report.id}" 
+                       class="inline-flex items-center justify-center p-1.5 bg-[#002F35] text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                        <span class="material-icons-round text-sm">visibility</span>
+                    </a>
+                </td>
+            </tr>
+        `).join('');
     },
 
-    updateFilterCounts() {
-        const statusCounts = {
-            all: this.data.length,
-            selesai: this.data.filter(r => r.status === 'selesai').length,
-            ditolak: this.data.filter(r => r.status === 'ditolak').length
-        };
-
-        this.filterButtons.forEach(button => {
-            const status = button.dataset.status;
-            const countElement = button.querySelector('.count');
-            if (countElement) {
-                countElement.textContent = statusCounts[status];
-            }
+    initializeEventListeners() {
+        // Filter functionality
+        document.getElementById('statusFilter')?.addEventListener('change', (e) => {
+            this.loadReports();
         });
-    },
 
-    showReportDetail(reportId) {
-        // Navigate to report detail page
-        window.location.href = `/laporan/detail/${reportId}`;
-    },
-
-    viewAttachment(attachmentUrl) {
-        // Open attachment in a modal or new tab
-        window.open(attachmentUrl, '_blank');
-    },
-
-    showErrorNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'error-notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
+        // Search functionality
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            this.loadReports();
+        });
     },
 
     render() {
-        return `
-            ${Navbar.render()}
-            <div class="riwayat-admin-container">
-                <h1>Riwayat Laporan</h1>
-                
-                <div class="filter-section">
-                    <button class="filter-btn active" data-status="all">
-                        Semua Laporan 
-                        <span class="count">${this.data.length}</span>
-                    </button>
-                    <button class="filter-btn" data-status="selesai">
-                        Selesai 
-                        <span class="count">0</span>
-                    </button>
-                    <button class="filter-btn" data-status="ditolak">
-                        Ditolak 
-                        <span class="count">0</span>
-                    </button>
-                </div>
+        const app = document.getElementById('app');
+        if (!app) return;
 
-                <div class="laporan-list">
-                    <!-- Reports will be dynamically inserted here -->
-                </div>
+        app.innerHTML = `
+            <div class="min-h-screen bg-gray-100">
+                ${Sidebar.render()}
+                
+                <main class="lg:ml-64 p-4 lg:p-8">
+                    <div class="bg-white rounded-lg shadow-lg">
+                        <!-- Header Section -->
+                        <div class="p-6 border-b">
+                            <h1 class="text-xl lg:text-2xl font-bold text-[#002F35]">Riwayat Laporan</h1>
+                        </div>
+
+                        <!-- Filters Section -->
+                        <div class="p-6 border-b">
+                            <div class="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+                                <div class="flex flex-col lg:flex-row gap-4 lg:items-center">
+                                    <div class="relative">
+                                        <input type="text" 
+                                               id="searchInput"
+                                               placeholder="Cari laporan..." 
+                                               class="pl-10 pr-4 py-2 border rounded-lg w-full lg:w-64">
+                                        <span class="material-icons-round absolute left-3 top-2.5 text-gray-400">search</span>
+                                    </div>
+                                    
+                                    <select id="statusFilter" 
+                                            class="border rounded-lg px-4 py-2">
+                                        <option value="">Semua Status</option>
+                                        <option value="Diterima">Diterima</option>
+                                        <option value="Ditolak">Ditolak</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Section -->
+                        <div class="overflow-x-auto p-6">
+                            <table id="reports-table" class="w-full table-auto">
+                                <thead class="bg-gray-50">
+                                    <tr class="text-left text-sm font-medium text-[#002F35] border-b">
+                                        <th class="px-6 py-4 whitespace-nowrap">ID</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Nama</th>
+                                        <th class="px-6 py-4">Judul</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Jenis</th>
+                                        <th class="px-6 py-4">Deskripsi</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Tgl Kejadian</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Tgl Selesai</th>
+                                        <th class="px-6 py-4">Alamat</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Status</th>
+                                        <th class="px-6 py-4 whitespace-nowrap">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Section -->
+                        <div class="p-6 border-t">
+                            <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+                                <div class="text-sm text-[#002F35]">
+                                    Menampilkan 1-10 dari 100 laporan
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="px-3 py-1 border rounded hover:bg-gray-50 text-sm text-[#002F35]">Previous</button>
+                                    <button class="px-3 py-1 bg-[#002F35] text-white rounded hover:bg-opacity-90 text-sm">1</button>
+                                    <button class="px-3 py-1 border rounded hover:bg-gray-50 text-sm text-[#002F35]">2</button>
+                                    <button class="px-3 py-1 border rounded hover:bg-gray-50 text-sm text-[#002F35]">3</button>
+                                    <button class="px-3 py-1 border rounded hover:bg-gray-50 text-sm text-[#002F35]">Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </div>
-            ${Footer.render()}
         `;
     }
 };
 
-export default RiwayatAdminPage;
+export default RiwayatAdmin;
