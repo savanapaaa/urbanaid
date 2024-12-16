@@ -94,7 +94,7 @@ const HomePage = {
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div class="w-full md:w-1/2 md:order-2">
                             <div class="relative">
-                                <img src="/images/hero-section.png" alt="Urban Infrastructure Hero" class="hero-image">
+                                <img src="/images/hero-section1.png" alt="Urban Infrastructure Hero" class="hero-image rounded-2xl">
                             </div>
                         </div>
                         <div class="w-full md:w-1/2 text-center md:text-left md:order-1">
