@@ -1,41 +1,32 @@
 const swRegister = async () => {
-    if (!('serviceWorker' in navigator)) {
-      console.log('Service Worker not supported in the browser');
-      return;
-    }
-  
-    try {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      for (const registration of registrations) {
-        await registration.unregister();
-      }
-  
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        updateViaCache: 'none'
+  if (!('serviceWorker' in navigator)) {
+    console.warn('Service Worker is not supported in this browser');
+    return;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/',
+      type: 'module'
+    });
+
+    console.log('Service Worker registered successfully:', registration.scope);
+
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // if (window.confirm('New version available! Refresh to update?')) {
+          //   window.location.reload();
+          // }
+        }
       });
-  
-      console.log('Service Worker registration successful with scope:', registration.scope);
-  
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-  
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            console.log('New Service Worker available');
-            // if (confirm('New version available! Reload to update?')) {
-            //   window.location.reload();
-            // }
-          }
-        });
-      });
-  
-    } catch (error) {
-      console.error('Service Worker registration failed:', error);
-    }
-  };
-  
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('Service Worker controller changed');
-  });
-  
-  export default swRegister;
+    });
+
+  } catch (error) {
+    console.error('Service Worker registration failed:', error);
+  }
+};
+
+export default swRegister;

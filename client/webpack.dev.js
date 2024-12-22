@@ -17,6 +17,13 @@ module.exports = merge(common, {
       directory: path.resolve(__dirname, 'dist'),
       watch: true,
     },
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/pelaporan.*/, to: '/index.html' },
+        { from: /^\/admin.*/, to: '/index.html' },
+        { from: /./, to: '/index.html' }
+      ]
+    },
     open: true,
     port: 9000,
     client: {

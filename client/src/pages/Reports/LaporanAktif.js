@@ -1,424 +1,639 @@
-class LaporanAktif {
-    constructor() {
-        this.data = [
-            {
-                id: 1,
-                judul: 'Perbaikan Jalan Berlubang',
-                jenisInfrastruktur: 'Infrastruktur Perkotaan',
-                tanggalKejadian: '2024-01-15',
-                deskripsi: 'Jalan berlubang yang cukup dalam di Jalan Kenanga No. 123, perlu perbaikan segera karena membahayakan pengendara.',
-                status: 'pending',
-                alamat: 'Jl. Kenanga No. 123, RT 02/RW 03, Kel. Sukamaju',
-                buktiLampiran: '/images/infra.jpeg'
-            },
-            {
-                id: 2,
-                judul: 'Saluran Air Tersumbat',
-                jenisInfrastruktur: 'Infrastruktur Lingkungan',
-                tanggalKejadian: '2024-02-01',
-                deskripsi: 'Saluran air di Jalan Melati mengalami penyumbatan yang menyebabkan genangan air ketika hujan.',
-                status: 'diproses',
-                alamat: 'Jl. Melati Blok B2 No. 45, RT 05/RW 08, Kel. Harapan Jaya',
-                buktiLampiran: 'saluran-air.jpg'
-            },
-            {
-                id: 3,
-                judul: 'Lampu Penerangan Jalan Rusak',
-                jenisInfrastruktur: 'Infrastruktur Perkotaan',
-                tanggalKejadian: '2024-01-20',
-                deskripsi: 'Lima lampu jalan di sepanjang Jalan Mawar tidak berfungsi, menyebabkan jalan gelap di malam hari.',
-                status: 'ditolak',
-                alamat: 'Jl. Mawar Raya No. 78, RT 03/RW 04, Kel. Bunga Indah',
-                buktiLampiran: 'lampu-jalan.jpg'
-            }
-        ];
-        this.init();
-    }
+import ReportService from '../../services/report-service';
+import Loading from '../../components/common/Loading';
 
-    formatDate(dateString) {
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const date = new Date(dateString);
-        return date.toLocaleDateString('id-ID', options);
-    }
+const LaporanAktif = {
+  data: [],
 
-    getStatusIcon(status) {
-        switch(status) {
-            case 'pending':
-                return 'schedule';
-            case 'diproses':
-                return 'sync';
-            case 'ditolak':
-                return 'cancel';
-            default:
-                return 'info';
+  async init() {
+    await this.render();
+    this.initializeAOS();
+  },
+
+  initializeAOS() {
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 50,
+        delay: 100
+      });
+    }
+  },
+
+  async render() {
+    try {
+      if (!this.data.length) {
+        const reports = await ReportService.getUserReports();
+        if (!reports) {
+          throw new Error('Data laporan tidak ditemukan');
         }
-    }
+        this.data = reports;
+      }
 
-    getStatusClass(status) {
-        switch(status) {
-            case 'pending':
-                return 'status-pending';
-            case 'diproses':
-                return 'status-process';
-            case 'ditolak':
-                return 'status-reject';
-            default:
-                return '';
-        }
-    }
+      const activeReports = this.data.filter((report) => report.status === 'pending');
 
-    createReportCard(report) {
-        const statusIcon = this.getStatusIcon(report.status);
-        const statusClass = this.getStatusClass(report.status);
-        const showActions = report.status === 'pending';
-        
-        const statusText = {
-            'pending': 'Pending',
-            'diproses': 'Diproses',
-            'ditolak': 'Ditolak'
-        }[report.status];
-        
+      if (activeReports.length === 0) {
         return `
-            <div class="laporan-card ${statusClass}" data-status="${report.status}">
-                <div class="status-icon">
-                    <span class="material-icons-round">${statusIcon}</span>
-                    <span class="status-text">${statusText}</span>
-                </div>
-                
-                <div class="card-content">
-                    <div class="laporan-info">
-                        <div class="laporan-title">
-                            <h3>${report.judul}</h3>
-                            <div class="infra-type">
-                                <span class="material-icons-round">account_balance</span>
-                                ${report.jenisInfrastruktur}
+                    <div class="max-w-7xl mx-auto px-4 pt-6 pb-8">
+                        <h2 class="flex items-center justify-center gap-2 text-2xl font-bold text-gray-900 " data-aos="fade-up">
+                            <span class="material-icons-round text-[#00899B]">dashboard</span>
+                            Laporan Aktif
+                        </h2>
+                        
+                        <div class="text-center space-y-4" data-aos="fade-up">
+                            <div class="max-w-sm mx-auto mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                                    <style>
+                                        @keyframes float {
+                                            0% { transform: translateY(0px); }
+                                            50% { transform: translateY(-20px); }
+                                            100% { transform: translateY(0px); }
+                                        }
+                                        .float { animation: float 3s ease-in-out infinite; }
+                                    </style>
+                                    <rect width="500" height="500" fill="white"/>
+                                    <g class="float">
+                                        <path d="M150 210 L235 210 L255 240 L350 240 L350 370 L150 370 Z" fill="#00899B" opacity="0.2"/>
+                                        
+                                        <path d="M180 280 L320 280" stroke="#00899B" stroke-width="2" stroke-dasharray="8,8"/>
+                                        <path d="M180 310 L320 310" stroke="#00899B" stroke-width="2" stroke-dasharray="8,8"/>
+                                        <path d="M180 340 L320 340" stroke="#00899B" stroke-width="2" stroke-dasharray="8,8"/>
+                                        
+                                        <circle cx="250" cy="290" r="30" fill="#002F35"/>
+                                        <path d="M250 270 L250 310 M230 290 L270 290" stroke="white" stroke-width="3"/>
+                                    </g>
+                                    <path d="M150 420h200M200 440h100" stroke="#E0E0E0" stroke-width="3"/>
+                                </svg>
                             </div>
-                            <div class="date-info">
-                                <span class="material-icons-round">event</span>
-                                ${this.formatDate(report.tanggalKejadian)}
-                            </div>
-                            <p class="laporan-desc">${report.deskripsi}</p>
+                            <h3 class="text-xl font-semibold text-gray-800">Belum Ada Laporan Aktif</h3>
+                            <p class="text-gray-600 max-w-md mx-auto">
+                                Saat ini Anda belum memiliki laporan yang sedang aktif. 
+                                Buat laporan baru untuk melaporkan permasalahan infrastruktur di sekitar Anda.
+                            </p>
+                            <button onclick="window.location.href='/pelaporan'" 
+                                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#00899B] to-[#002F35] text-white rounded-2xl hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-semibold">
+                                <span class="material-icons-round mr-2">add_circle</span>
+                                Buat Laporan Baru
+                            </button>
                         </div>
                     </div>
-    
-                    <div class="actions-wrapper">
-                        ${showActions ? `
-                            <div class="crud-actions">
-                                <button class="action-btn edit-btn" onclick="laporanAktif.editReport(${report.id})">
-                                    <span class="material-icons-round">edit</span>
-                                    Edit
-                                </button>
-                                <button class="action-btn delete-btn" onclick="laporanAktif.deleteReport(${report.id})">
-                                    <span class="material-icons-round">delete</span>
-                                    Hapus
-                                </button>
-                            </div>
-                        ` : ''}
-                        <button class="action-btn view-detail-btn" onclick="laporanAktif.showDetail(${report.id})">
-                            <span class="material-icons-round">visibility</span>
-                            Detail
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
+                `;
+      }
 
-    render() {
-        const pendingReports = this.data.filter(report => report.status === 'pending');
-        const processedReports = this.data.filter(report => report.status === 'diproses');
-        const rejectedReports = this.data.filter(report => report.status === 'ditolak');
-
-        return `
-            <div class="laporan-aktif-container">
-                <div class="main-content">
-                    <h2 class="laporan-aktif-title">
-                        <span class="material-icons-round">dashboard</span>
+      const mainContent = `
+                <div class="max-w-7xl mx-auto px-4 py-8">
+                    <h2 class="flex items-center justify-center gap-2 text-2xl font-bold text-gray-900 mb-8" data-aos="fade-up">
+                        <span class="material-icons-round text-[#00899B]">dashboard</span>
                         Laporan Aktif
                     </h2>
-                    
-                    <div class="laporan-aktif-filter">
-                        <button class="filter-btn active" data-status="all" onclick="laporanAktif.filterReports('all')">
-                            <span class="material-icons-round">all_inbox</span>
-                            Semua (${this.data.length})
-                        </button>
-                        <button class="filter-btn" data-status="pending" onclick="laporanAktif.filterReports('pending')">
-                            <span class="material-icons-round">schedule</span>
-                            Pending (${pendingReports.length})
-                        </button>
-                        <button class="filter-btn" data-status="diproses" onclick="laporanAktif.filterReports('diproses')">
-                            <span class="material-icons-round">sync</span>
-                            Diproses (${processedReports.length})
-                        </button>
-                        <button class="filter-btn" data-status="ditolak" onclick="laporanAktif.filterReports('ditolak')">
-                            <span class="material-icons-round">cancel</span>
-                            Ditolak (${rejectedReports.length})
-                        </button>
-                    </div>
 
-                    <div class="laporan-list">
-                        ${this.data.map(report => this.createReportCard(report)).join('')}
+                    <div class="space-y-8">
+                        ${activeReports.map((report, index) => this.createReportCard(report, index)).join('')}
+                    </div>
+                </div>
+            `;
+
+      setTimeout(() => {
+        window.laporanAktif = this;
+      }, 0);
+
+      return mainContent;
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+      return `
+                <div class="max-w-7xl mx-auto px-4 py-8 text-center" data-aos="fade-up">
+                    <p class="text-base text-red-600">Gagal memuat data laporan: ${error.message}</p>
+                </div>
+            `;
+    }
+  },
+
+  formatDate(dateString) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', options);
+  },
+
+
+  createReportCard(report, index) {
+    return `
+            <div class="group relative" data-aos="fade-up" data-aos-delay="${index * 100}">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#00899B]/20 to-[#002F35]/20 rounded-3xl blur-2xl transform -rotate-1"></div>
+                <div class="relative bg-white/80 backdrop-blur-xl rounded-2xl p-8 md:p-10 shadow-xl mb-6">
+                    <div class="flex items-center mb-6">
+                        <span class="material-icons-round text-amber-600 mr-2 text-xl">schedule</span>
+                        <span class="bg-amber-100 text-amber-800 px-4 py-1 rounded-full text-sm font-semibold">
+                            Pending
+                        </span>
+                    </div>
+                    
+                    <div class="relative flex flex-col md:flex-row md:gap-6">
+                        <div class="flex-grow order-1 md:order-none">
+                            <div class="space-y-4">
+                                <h3 class="text-xl font-semibold text-gray-900">${report.judul}</h3>
+                                
+                                <div class="flex items-center text-gray-700  duration-300">
+                                    <span class="material-icons-round text-[#00899B] text-base mr-2">account_balance</span>
+                                    <span class="text-base">${report.jenis_infrastruktur}</span>
+                                </div>
+                                
+                                <div class="flex items-center text-gray-700  duration-300">
+                                    <span class="material-icons-round text-[#00899B] text-base mr-2">event</span>
+                                    <span class="text-base">${this.formatDate(report.tanggal_kejadian)}</span>
+                                </div>
+                                
+                                <div class="flex items-center text-gray-700 line-clamp-2 duration-300">
+                                    <span class="material-icons-round text-[#00899B] text-base mr-2">location_on</span>
+                                    <span class="text-base line-clamp-2">${report.alamat}</span>
+                                </div>
+                                
+                                <div class="text-gray-700 line-clamp-2  duration-300">
+                                    <span class="material-icons-round text-[#00899B] text-base mr-2 align-text-top">description</span>
+                                    ${report.deskripsi}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="order-2 mt-6 md:mt-0 flex items-center gap-3">
+                            <button onclick="laporanAktif.deleteReport(${report.id})"
+                                class="flex items-center justify-center min-h-[44px] min-w-[44px] p-2 bg-red-100 text-red-800 rounded-xl hover:bg-red-200 transition-colors duration-300 transform hover:scale-105">
+                                <span class="material-icons-round text-xl">delete</span>
+                            </button>
+                            <button onclick="laporanAktif.showDetail(${report.id})"
+                                class="flex items-center justify-center min-h-[44px] min-w-[44px] p-2 bg-gradient-to-r from-[#00899B] to-[#002F35] text-white rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                                <span class="material-icons-round text-xl">visibility</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
-    }
+  },
 
-    filterReports(status) {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            if (btn.dataset.status === status) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
 
-        const cards = document.querySelectorAll('.laporan-card');
-        cards.forEach(card => {
-            if (status === 'all' || card.dataset.status === status) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
+  initializeAOS() {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 50,
+      delay: 100
+    });
+  },
 
-    async showDetail(id) {
-        const report = this.data.find(r => r.id === id);
-        if (!report) return;
-    
-        await Swal.fire({
-            title: report.judul,
-            html: `
-                <div class="modal-detail">
-                    <div class="detail-item">
-                        <strong>Status Laporan</strong>
-                        <div class="status-info ${this.getStatusClass(report.status)}">
-                            <span class="material-icons-round">${this.getStatusIcon(report.status)}</span>
-                            ${report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                        </div>
-                    </div>
-    
-                    <div class="detail-item">
-                        <strong>Jenis Infrastruktur</strong>
-                        <div class="infra-type">
-                            <span class="material-icons-round">account_balance</span>
-                            ${report.jenisInfrastruktur}
-                        </div>
-                    </div>
-    
-                    <div class="detail-item">
-                        <strong>Tanggal Kejadian</strong>
-                        <div class="date-info">
-                            <span class="material-icons-round">event</span>
-                            ${this.formatDate(report.tanggalKejadian)}
-                        </div>
-                    </div>
-    
-                    <div class="detail-item">
-                        <strong>Lokasi Kejadian</strong>
-                        <div class="address-info">
-                            <span class="material-icons-round">location_on</span>
-                            <span>${report.alamat}</span>
-                        </div>
-                    </div>
-    
-                    <div class="detail-item">
-                        <strong>Deskripsi Masalah</strong>
-                        <p class="description-text">${report.deskripsi}</p>
-                    </div>
-    
-                    <div class="detail-item">
-                        <strong>Bukti Lampiran</strong>
-                        <div class="attachment-container">
-                            <div class="attachment-info">
-                                <span class="material-icons-round">attachment</span>
-                                ${report.buktiLampiran}
-                            </div>
-                            <div class="attachment-preview">
-                                <img src="/images/${report.buktiLampiran}" alt="Bukti Lampiran" 
-                                     onerror="this.src='/api/placeholder/800/400';this.onerror=null;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `,
-            width: 700,
-            padding: 0,
-            showCloseButton: true,
-            showConfirmButton: false,
-            customClass: {
-                popup: 'detail-modal-popup',
-                closeButton: 'modal-close-button'
-            }
-        });
-    }
+  initializeVanillaTilt() {
+    const cards = document.querySelectorAll('[data-tilt]');
+    cards.forEach((card) => {
+      VanillaTilt.init(card, {
+        max: 2,
+        speed: 400,
+        perspective: 500,
+        scale: 1.02,
+        transition: true,
+        'full-page-listening': true
+      });
+    });
+  },
 
-    async deleteReport(id) {
-        try {
-            const report = this.data.find(r => r.id === id);
-            if (report.status !== 'pending') {
-                throw new Error('Hanya laporan dengan status Pending yang dapat dihapus');
-            }
+  async deleteReport(id) {
+    try {
+      const report = this.data.find((r) => r.id === id);
+      if (!report) {
+        throw new Error('Laporan tidak ditemukan');
+      }
 
-            const confirmed = await Swal.fire({
-                title: 'Anda yakin?',
-                text: "Laporan yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#00899B',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            });
-
-            if (confirmed.isConfirmed) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-                this.data = this.data.filter(r => r.id !== id);
-                document.querySelector('.main-content').innerHTML = this.render();
-                
-                Swal.fire({
-                    title: 'Terhapus!',
-                    text: 'Laporan berhasil dihapus.',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        } catch (error) {
-            Swal.fire({
-                title: 'Gagal!',
-                text: error.message,
-                icon: 'error',
-                timer: 2000,
-                showConfirmButton: false
-            });
+      const result = await Swal.fire({
+        title: 'Hapus Laporan',
+        text: `Apakah Anda yakin ingin menghapus laporan "${report.judul}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        customClass: {
+          popup: 'rounded-xl'
         }
+      });
+
+      if (!result.isConfirmed) return;
+
+      Swal.fire({
+        title: 'Sedang Menghapus...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      await ReportService.deleteReport(id);
+      this.data = this.data.filter((r) => r.id !== id);
+
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Laporan berhasil dihapus.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'rounded-xl'
+        }
+      }).then(() => {
+        window.location.reload();
+      });
+
+    } catch (error) {
+      Swal.fire({
+        title: 'Gagal!',
+        text: error.message || 'Terjadi kesalahan saat menghapus laporan',
+        icon: 'error',
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'rounded-xl'
+        }
+      });
     }
+  },
 
-    async editReport(id) {
-        try {
-            const report = this.data.find(r => r.id === id);
-            if (report.status !== 'pending') {
-                throw new Error('Hanya laporan dengan status Pending yang dapat diedit');
-            }
+  async editReport(id) {
+    try {
+      const report = this.data.find((r) => r.id === id);
+      if (!report) return;
 
-            const { value: formValues } = await Swal.fire({
-                title: 'Edit Laporan',
-                html: `
-                    <div class="form-group">
-                        <label class="form-label" for="swal-judul">Judul Laporan</label>
-                        <input id="swal-judul" class="swal2-input" value="${report.judul}">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="swal-infrastruktur">Jenis Infrastruktur</label>
-                        <select id="swal-infrastruktur" class="swal2-select">
-                            <option value="Infrastruktur Perkotaan" ${report.jenisInfrastruktur === 'Infrastruktur Perkotaan' ? 'selected' : ''}>
-                                Infrastruktur Perkotaan
-                            </option>
-                            <option value="Infrastruktur Lingkungan" ${report.jenisInfrastruktur === 'Infrastruktur Lingkungan' ? 'selected' : ''}>
-                                Infrastruktur Lingkungan
-                            </option>
-                            <option value="Infrastruktur Sosial" ${report.jenisInfrastruktur === 'Infrastruktur Sosial' ? 'selected' : ''}>
-                                Infrastruktur Sosial
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="swal-tanggal">Tanggal Kejadian</label>
-                        <input type="date" id="swal-tanggal" class="swal2-input" value="${report.tanggalKejadian}">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="swal-alamat">Alamat Lengkap</label>
-                        <input id="swal-alamat" class="swal2-input" value="${report.alamat}">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="swal-deskripsi">Deskripsi Masalah</label>
-                        <textarea id="swal-deskripsi" class="swal2-textarea">${report.deskripsi}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="swal-lampiran">Bukti Lampiran</label>
-                        <div class="file-input-container">
-                            <label class="file-input-label">
-                                <input type="file" id="swal-lampiran" accept="image/*" style="display: none;">
-                                <span class="material-icons-round">upload_file</span>
-                                Pilih File Baru
-                            </label>
-                            <div id="current-file" style="margin-top: 0.5rem; font-size: 0.875rem; color: #666;">
-                                File saat ini: ${report.buktiLampiran}
-                            </div>
-                        </div>
+      const { value: formValues } = await Swal.fire({
+        title: 'Edit Laporan',
+        html: `
+                    <div class="space-y-4">
+                        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                                <span class="material-icons-round text-[#00899B] mr-2">title</span>
+                                <span class="text-base text-gray-700">Judul Laporan</span>
+                            </div>`,
+    `<input name="swal-judul" class="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00899B] focus:border-[#00899B]" 
+                                    value="${report.judul}">`
+  )}
+                        
+                        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                                <span class="material-icons-round text-[#00899B] mr-2">account_balance</span>
+                                <span class="text-base text-gray-700">Jenis Infrastruktur</span>
+                            </div>`,
+    `<select name="swal-infrastruktur" class="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                <option value="Infrastruktur Perkotaan" ${report.jenis_infrastruktur === 'Infrastruktur Perkotaan' ? 'selected' : ''}>
+                                    Infrastruktur Perkotaan
+                                </option>
+                                <option value="Infrastruktur Lingkungan" ${report.jenis_infrastruktur === 'Infrastruktur Lingkungan' ? 'selected' : ''}>
+                                    Infrastruktur Lingkungan
+                                </option>
+                                <option value="Infrastruktur Sosial" ${report.jenis_infrastruktur === 'Infrastruktur Sosial' ? 'selected' : ''}>
+                                    Infrastruktur Sosial
+                                </option>
+                            </select>`
+  )}
+    
+                        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                                <span class="material-icons-round text-[#00899B] mr-2">event</span>
+                                <span class="ml-1">Tanggal Kejadian</span>
+                            </div>`,
+    `<input type="date" name="swal-tanggal" class="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                                    value="${report.tanggal_kejadian.split('T')[0]}">`
+  )}
+    
+                        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                                <span class="material-icons-round text-[#00899B] mr-2">location_on</span>
+                                <span class="ml-1">Alamat Lengkap</span>
+                            </div>`,
+    `<input name="swal-alamat" class="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                                    value="${report.alamat}">`
+  )}
+    
+                        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                                <span class="material-icons-round text-[#00899B] mr-2">description</span>
+                                <span class="ml-1">Deskripsi Masalah</span>
+                            </div>`,
+    `<textarea name="swal-deskripsi" class="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 min-h-[100px]">${report.deskripsi}</textarea>`
+  )}
+    
+                        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                                <span class="material-icons-round text-[#00899B] mr-2">image</span>
+                                <span class="ml-1">Bukti Lampiran</span>
+                            </div>`,
+    `<div class="space-y-2">
+                                <label class="flex items-center justify-center text-center px-3 py-3 bg-gray-50 text-gray-700 rounded-lg border border-gray-300 cursor-pointer hover:bg-gray-100">
+                                    <input type="file" name="swal-lampiran" accept="image/*" class="hidden">
+                                    <div class="flex items-center justify-center w-full">
+                                        <span class="material-icons-round text-[#00899B] mr-2">upload_file</span>
+                                        <span class="text-base text-center">Pilih File Baru</span>
+                                    </div>
+                                </label>
+                                <div class="text-sm text-gray-500 text-center">
+                                    File saat ini: ${report.bukti_lampiran}
+                                </div>
+                                <div id="file-preview" class="mt-2"></div>
+                            </div>`
+  )}
                     </div>
                 `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                width: '600px',
-                preConfirm: () => {
-                    const fileInput = document.getElementById('swal-lampiran');
-                    const fileName = fileInput.files.length > 0 
-                        ? fileInput.files[0].name 
-                        : report.buktiLampiran;
+        width: '800px',
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        cancelButtonText: 'Batal',
+        customClass: {
+          popup: 'rounded-xl',
+          title: 'text-3xl font-bold text-gray-900 mb-4'
+        },
+        showCloseButton: true,
+        didRender: () => {
+          const fileInput = document.querySelector('input[name="swal-lampiran"]');
+          const filePreview = document.getElementById('file-preview');
 
-                    return {
-                        judul: document.getElementById('swal-judul').value,
-                        jenisInfrastruktur: document.getElementById('swal-infrastruktur').value,
-                        tanggalKejadian: document.getElementById('swal-tanggal').value,
-                        alamat: document.getElementById('swal-alamat').value,
-                        deskripsi: document.getElementById('swal-deskripsi').value,
-                        buktiLampiran: fileName
-                    }
-                }
+          if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+
+              if (!this.validateFile(file)) {
+                e.target.value = '';
+                return;
+              }
+
+              if (filePreview) {
+                filePreview.innerHTML = `
+                                    <div class="file-preview flex items-center bg-gray-50 p-2 rounded-lg">
+                                        <img src="${URL.createObjectURL(file)}" 
+                                             alt="preview" 
+                                             class="lazyload w-16 h-16 object-cover rounded-md mr-3">
+                                             loading="lazy"
+                                        <div>
+                                            <p class="text-sm font-medium">${file.name}</p>
+                                            <p class="text-xs text-gray-500">${(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                                        </div>
+                                    </div>
+                                `;
+              }
             });
+          }
+        },
+        preConfirm: () => {
+          const fileInput = document.querySelector('input[name="swal-lampiran"]');
+          const judul = document.querySelector('input[name="swal-judul"]').value.trim();
+          const infrastruktur = document.querySelector('select[name="swal-infrastruktur"]').value;
+          const tanggal = document.querySelector('input[name="swal-tanggal"]').value;
+          const alamat = document.querySelector('input[name="swal-alamat"]').value.trim();
+          const deskripsi = document.querySelector('textarea[name="swal-deskripsi"]').value.trim();
 
-            if (formValues) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                const index = this.data.findIndex(r => r.id === id);
-                this.data[index] = { 
-                    ...this.data[index], 
-                    ...formValues,
-                    status: this.data[index].status,
-                    id: this.data[index].id
-                };
-                
-                document.querySelector('.main-content').innerHTML = this.render();
-                
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'Laporan berhasil diperbarui.',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+          if (!judul) {
+            Swal.showValidationMessage('Judul laporan harus diisi');
+            return false;
+          }
+
+          if (!alamat) {
+            Swal.showValidationMessage('Alamat harus diisi');
+            return false;
+          }
+
+          if (!deskripsi) {
+            Swal.showValidationMessage('Deskripsi masalah harus diisi');
+            return false;
+          }
+
+          const formData = new FormData();
+          formData.append('judul', judul);
+          formData.append('jenis_infrastruktur', infrastruktur);
+          formData.append('tanggal_kejadian', tanggal);
+          formData.append('alamat', alamat);
+          formData.append('deskripsi', deskripsi);
+
+          if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+
+            if (!this.validateFile(file)) {
+              return false;
             }
-        } catch (error) {
-            Swal.fire({
-                title: 'Gagal!',
-                text: error.message,
-                icon: 'error',
-                timer: 2000,
-                showConfirmButton: false
-            });
+
+            formData.append('bukti_lampiran', file);
+          } else {
+            formData.append('bukti_lampiran', report.bukti_lampiran);
+          }
+
+          return formData;
         }
+      });
+
+      if (!formValues) return;
+
+      Swal.fire({
+        title: 'Sedang Memperbarui...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      const updatedReport = await ReportService.updateReport(id, formValues);
+
+      const index = this.data.findIndex((r) => r.id === id);
+      if (index !== -1) {
+        this.data[index] = { ...this.data[index], ...updatedReport };
+      }
+
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) {
+        mainContent.innerHTML = await this.render();
+      }
+
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Laporan berhasil diperbarui.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'rounded-xl'
+        }
+      });
+
+    } catch (error) {
+      Swal.fire({
+        title: 'Gagal!',
+        text: error.message || 'Terjadi kesalahan saat memperbarui laporan',
+        icon: 'error',
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'rounded-xl'
+        }
+      });
+    }
+  },
+
+  validateFile(file) {
+    const validTypes = ['image/jpeg', 'image/png'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!validTypes.includes(file.type)) {
+      Swal.fire({
+        title: 'File tidak valid!',
+        text: 'File harus berformat JPEG atau PNG',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#00899B'
+      });
+      return false;
     }
 
-    init() {
-        const mainContent = document.querySelector('.main-content');
-        if (mainContent) {
-            mainContent.innerHTML = this.render();
-        }
+    if (file.size > maxSize) {
+      Swal.fire({
+        title: 'File terlalu besar!',
+        text: 'Ukuran file tidak boleh lebih dari 5MB',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#00899B'
+      });
+      return false;
     }
-}
 
-// Initialize the component
-const laporanAktif = new LaporanAktif();
-window.laporanAktif = laporanAktif;
+    return true;
+  },
 
-export default laporanAktif;
+  createModalContent(title, content) {
+    return `
+            <div class="bg-white rounded-xl">
+                <div class="border-b border-gray-200 p-4">
+                    <h3 class="text-lg font-semibold text-gray-800">${title}</h3>
+                </div>
+                <div class="p-4">
+                    ${content}
+                </div>
+            </div>
+        `;
+  },
+
+  createFormField(label, content) {
+    return `
+            <div class="mb-6 last:mb-0">
+                <div class="text-sm font-medium text-gray-700 mb-2">${label}</div>
+                ${content}
+            </div>
+        `;
+  },
+
+  async showDetail(id) {
+    const report = this.data.find((r) => r.id === id);
+    if (!report) return;
+
+    await Swal.fire({
+      title: report.judul,
+      html: `
+    <div class="space-y-6">
+        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">schedule</span>
+                <span class="ml-1">Status Laporan</span>
+            </div>`,
+    `<div class="flex items-center bg-amber-100 text-amber-800 px-3 py-2 rounded-lg text-base border border-gray-200 text-justify">
+                Pending
+            </div>`
+  )}
+    
+        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">account_balance</span>
+                <span class="ml-1">Jenis Infrastruktur</span>
+            </div>`,
+    `<div class="flex items-center bg-gray-50 px-3 py-2 rounded-lg text-base text-gray-700 border border-gray-200 text-justify">
+                ${report.jenis_infrastruktur}
+            </div>`
+  )}
+    
+        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">event</span>
+                <span class="ml-1">Tanggal Kejadian</span>
+            </div>`,
+    `<div class="flex items-center bg-gray-50 px-3 py-2 rounded-lg text-base text-gray-700 border border-gray-200">
+                ${this.formatDate(report.tanggal_kejadian)}
+            </div>`
+  )}
+    
+        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">location_on</span>
+                <span class="ml-1">Lokasi Kejadian</span>
+            </div>`,
+    `<div class="flex items-center bg-gray-50 px-3 py-2 rounded-lg text-base text-gray-700 border border-gray-200 text-justify">
+                ${report.alamat}
+            </div>`
+  )}
+    
+        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">description</span>
+                <span class="ml-1">Deskripsi Masalah</span>
+            </div>`,
+    `<div class="flex items-center bg-gray-50 px-3 py-2 rounded-lg text-base text-gray-700 border border-gray-200 text-justify line-clamp-3">
+                ${report.deskripsi}
+            </div>`
+  )}
+
+            ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">map</span>
+                <span class="ml-1">Lokasi pada Peta</span>
+            </div>`,
+    '<div class="w-full h-[400px] mt-4 rounded-lg overflow-hidden" id="detailReportMap"></div>'
+  )}
+
+        ${this.createFormField(
+    `<div class="flex items-center ml-4">
+                <span class="material-icons-round text-[#00899B] mr-2">image</span>
+                <span class="ml-1">Bukti Lampiran</span>
+            </div>`,
+    `<div class="bg-gray-50 rounded-lg overflow-hidden">
+                <img src="${report.bukti_lampiran}" alt="Bukti Lampiran" 
+                    class="lazyload w-full h-auto object-cover"
+                    onerror="this.src='/api/placeholder/800/400';this.onerror=null;"
+                    loading="lazy">
+            </div>`
+  )}
+    
+
+    </div>
+            `,
+      width: '800px',
+      showCloseButton: true,
+      showConfirmButton: false,
+      customClass: {
+        popup: 'rounded-xl',
+        title: 'text-3xl font-bold text-gray-900 mb-4'
+      },
+      didOpen: () => {
+        if (typeof L !== 'undefined' && report.latitude && report.longitude) {
+          const map = L.map('detailReportMap').setView([report.latitude, report.longitude], 15);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(map);
+
+          L.marker([report.latitude, report.longitude])
+            .addTo(map)
+            .bindPopup(report.alamat)
+            .openPopup();
+        }
+      }
+    });
+  },
+
+  cleanup() {
+    this.data = [];
+    window.laporanAktif = null;
+    AOS.refresh();
+    Loading.hide();
+  }
+};
+
+window.laporanAktif = LaporanAktif;
+
+export default LaporanAktif;

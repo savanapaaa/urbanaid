@@ -1,4 +1,3 @@
-/* SweetAlert2 Custom Styles */
 .swal2-popup {
     font-family: 'Inter', sans-serif !important;
     border-radius: 12px !important;
@@ -24,7 +23,6 @@
     box-shadow: 0 0 0 3px rgba(0, 137, 155, 0.25) !important;
 }
 
-/* Loading spinner color */
 .swal2-spinner {
     border-color: #00899B !important;
     border-right-color: transparent !important;

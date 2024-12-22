@@ -48,17 +48,17 @@ module.exports = merge(common, {
       chunks: 'all',
     },
   },
-  // plugins: [
-  //   new ImageminWebpWebpackPlugin({
-  //     config: [
-  //       {
-  //         test: /\.(jpe?g|png)/,
-  //         options: {
-  //           quality: 80,
-  //         },
-  //       },
-  //     ],
-  //     overrideExtension: true,
-  //   }),
-  // ],
+  plugins: [
+    new ImageminWebpWebpackPlugin({
+      config: [
+        {
+          test: /\.(jpe?g|png)/,
+          options: {
+            quality: 80,
+          },
+        },
+      ],
+      overrideExtension: true,
+    }),
+  ],
 });

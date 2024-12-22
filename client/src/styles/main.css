@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Base styles */
 html {
     scroll-behavior: smooth;
 }
@@ -10,7 +9,61 @@ body {
     color: #000000;
 }
 
-/* Gradient styles */
+#mobile-menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 64px;
+    bottom: 0;
+    background-color: rgba(0, 47, 53, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+}
+
+#mobile-menu.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+}
+
+#mobile-menu:not(.hidden) {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+#mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4); 
+    z-index: 40;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    visibility: hidden;
+    margin-top: 64px;
+}
+
+#mobile-menu-overlay:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bg-grid-pattern {
+    background-image: linear-gradient(#00899B 1px, transparent 1px),
+                      linear-gradient(to right, #00899B 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.bg-pattern-overlay {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 20px 20px;
+}
+
 .gradient-background {
     background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
 }
@@ -21,14 +74,14 @@ body {
     display: inline-block;
     font-weight: bold; 
     border-radius: 17px;
-    transition: all 0.3s ease; 
+    min-height: 44px;
+    min-width: 44px;
 }
 
 .gradient-button:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Custom login button */
 .gradient-border-button {
     position: relative;
     display: inline-block;
@@ -44,15 +97,13 @@ body {
     background-origin: border-box;
     background-clip: padding-box, border-box;
     cursor: pointer;
-    transition: all 0.3s ease; 
+    transition: all 0.3s ease;
 }
 
 .gradient-border-button:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-
-/* Hero section */
 .hero-section {
     background-color: white;
     min-height: 80vh;
@@ -69,7 +120,6 @@ body {
     display: block;
 }
 
-/* Section titles */
 .section-title {
     font-size: 2rem;
     font-weight: 700;
@@ -96,7 +146,6 @@ body {
     color: #666;
 }
 
-/* Infrastructure section */
 .infrastructure-section {
     padding: 4rem 0;
 }
@@ -115,8 +164,6 @@ body {
     word-spacing: 2px;
 }
 
-
-/* Stats section */
 .stats-section {
     background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
     padding: 4rem 0;
@@ -139,7 +186,6 @@ body {
     margin: 0 auto;
 }
 
-/* Process section */
 .process-icon {
     background: linear-gradient(90deg, #00899B 0%, #002F35 100%);
     -webkit-background-clip: text;
@@ -150,17 +196,11 @@ body {
 }
 
 .process-step-container {
-    background: white;
     padding: 1.5rem;
     border-radius: 12px;
     position: relative;
     z-index: 2;
-    transition: transform 0.3s ease;
     margin-bottom: 2rem;
-}
-
-.process-step-container:hover {
-    transform: translateY(-5px);
 }
 
 .process-vertical-line {
@@ -170,7 +210,6 @@ body {
     margin: 1rem auto;
 }
 
-/* Testimonial section */
 .testimonials-section {
     background-color: #F6F6F6;
     padding: 4rem 0;
@@ -193,12 +232,10 @@ body {
     font-weight: 600;
 }
 
-/* Brand color */
 .brand-color {
     color: white;
 }
 
-/* Animations */
 .fade-in {
     animation: fadeIn 0.5s ease-in;
 }
@@ -206,29 +243,4 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
-}
-
-#mobile-menu {
-    display: none;
-    transition: transform 0.3s ease-in-out;
-}
-
-#mobile-menu.open {
-    display: block;
-    transform: translateX(0);
-}
-
-.drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 40;
-    display: none;
-}
-
-.drawer-overlay.open {
-    display: block;
 }

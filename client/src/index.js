@@ -1,52 +1,47 @@
 import './styles/main.css';
-import './styles/article.css';
-import './styles/pelaporan.css';
 import './styles/responsive.css';
 import './styles/elemen.css';
 import './styles/swal.css';
-import './styles/laporanaktif.css'; 
-// import './styles/riwayat.css';  
-import './styles/detail.css';  
-import './styles/profile.css';
-import './styles/tentangkami.css';
-
-// Import App
+import './styles/admin.css';
+import swRegister from './utils/sw-register';
 import App from './App';
 
 const initApp = async () => {
-    try {
-        const loadingElement = document.getElementById('page-loading');
-        if (loadingElement) loadingElement.classList.remove('hidden');
+  try {
+    const loadingElement = document.getElementById('page-loading');
+    if (loadingElement) loadingElement.classList.remove('hidden');
 
-        const app = App.init(); 
-        await app.renderPage();
+    const app = App.init();
+    await app.renderPage();
 
-        if (loadingElement) loadingElement.classList.add('hidden');
+    await swRegister();
 
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            if (loadingElement) loadingElement.classList.add('hidden');
-            
-            const errorContainer = document.createElement('div');
-            errorContainer.className = 'fixed inset-x-0 top-4 flex items-center justify-center z-50';
-            errorContainer.innerHTML = `
+    if (loadingElement) loadingElement.classList.add('hidden');
+
+    window.addEventListener('error', (event) => {
+      console.error('Global error:', event.error);
+      if (loadingElement) loadingElement.classList.add('hidden');
+
+      const errorContainer = document.createElement('div');
+      errorContainer.className = 'fixed inset-x-0 top-4 flex items-center justify-center z-50';
+      errorContainer.innerHTML = `
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md">
                     <strong class="font-bold">Oops!</strong>
                     <span class="block sm:inline"> Terjadi kesalahan. Silakan muat ulang halaman.</span>
                 </div>
             `;
-            document.body.appendChild(errorContainer);
+      document.body.appendChild(errorContainer);
 
-            setTimeout(() => {
-                errorContainer.remove();
-            }, 5000);
-        });
+      setTimeout(() => {
+        errorContainer.remove();
+      }, 5000);
+    });
 
-    } catch (error) {
-        console.error('Failed to initialize app:', error);
-        const appContainer = document.getElementById('app');
-        if (appContainer) {
-            appContainer.innerHTML = `
+  } catch (error) {
+    console.error('Failed to initialize app:', error);
+    const appContainer = document.getElementById('app');
+    if (appContainer) {
+      appContainer.innerHTML = `
                 <div class="min-h-screen flex items-center justify-center">
                     <div class="text-center">
                         <h1 class="text-2xl font-bold text-gray-800 mb-4">Oops! Terjadi Kesalahan</h1>
@@ -58,15 +53,15 @@ const initApp = async () => {
                     </div>
                 </div>
             `;
-        }
     }
+  }
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
 
-window.addEventListener('hashchange', () => {
-    const app = App.init();
-    app.renderPage();
+window.addEventListener('popstate', () => {
+  const app = App.init();
+  app.renderPage();
 });
 
 export { initApp };

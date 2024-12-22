@@ -11,8 +11,24 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/api/reviews',
+    path: '/api/statistics/reviews',
     handler: statisticsController.getReviews,
+    options: {
+      auth: false 
+    }
+  },
+  {
+    method: 'GET',
+    path: '/api/statistics/user/{userId}',
+    handler: statisticsController.getUserStatistics,
+    options: {
+      auth: false
+    }
+  },
+  {
+    method: 'GET',
+    path: '/api/statistics/dashboard',
+    handler: statisticsController.getDashboardData,
     options: {
       auth: false 
     }

@@ -1,10 +1,17 @@
 const pool = require('../config/database');
+const dbUtils = require('../utils/db-utils');
 
 class UserModel {
   static async findByEmail(email) {
-    const query = 'SELECT * FROM users WHERE email = $1';
-    const result = await pool.query(query, [email]);
-    return result.rows[0];
+    try {
+      console.log('Finding user by email:', email);
+      const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      console.log('User found:', result.rowCount > 0);
+      return result.rows[0];
+    } catch (err) {
+      console.error('Error finding user by email:', err);
+      throw err;
+    }
   }
 
   static async findById(id) {
@@ -14,11 +21,12 @@ class UserModel {
   }
 
   static async create({ nama, email, password }) {
+    const nextId = await dbUtils.getNextAvailableId('users');
     const query = `
-      INSERT INTO users (nama, email, password, role)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO users (id, nama, email, password, role)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING id, nama, email, role`;
-    const result = await pool.query(query, [nama, email, password, 'user']);
+    const result = await pool.query(query, [nextId, nama, email, password, 'user']);
     return result.rows[0];
   }
 
@@ -41,6 +49,16 @@ class UserModel {
       WHERE id = $3 AND role = $4
       RETURNING id, nama, email, role`;
     const result = await pool.query(query, [nama, email, id, 'user']);
+    return result.rows[0];
+  }
+  
+  static async updatePassword(id, hashedPassword) {
+    const query = `
+      UPDATE users 
+      SET password = $1
+      WHERE id = $2 AND role = $3
+      RETURNING id`;
+    const result = await pool.query(query, [hashedPassword, id, 'user']);
     return result.rows[0];
   }
 }

@@ -9,8 +9,7 @@ class FormRegister extends HTMLElement {
     this.innerHTML = `
           <div class="backdrop-blur-sm bg-white/30 p-6 sm:p-8 rounded-lg shadow-lg max-w-sm sm:max-w-md w-full border border-white/50">
             <div class="flex items-center mb-6">
-              <!-- Tombol Kembali -->
-              <a href="#/" 
+              <a href="/" 
                  class="text-white hover:text-[#00899B] transition-colors duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                  aria-label="Kembali ke beranda">
                 <i class="material-icons-round">arrow_back</i>
@@ -22,7 +21,6 @@ class FormRegister extends HTMLElement {
             </div>
             
             <form class="space-y-6">
-              <!-- Input Nama Lengkap -->
               <div class="relative">
                 <input 
                   type="text" 
@@ -42,7 +40,6 @@ class FormRegister extends HTMLElement {
                 </label>
               </div>
   
-              <!-- Input Email -->
               <div class="relative">
                 <input 
                   type="email" 
@@ -62,7 +59,6 @@ class FormRegister extends HTMLElement {
                 </label>
               </div>
   
-              <!-- Input Password -->
               <div class="relative">
                 <input 
                   type="password" 
@@ -85,7 +81,6 @@ class FormRegister extends HTMLElement {
                 </label>
               </div>
   
-              <!-- Checkbox -->
               <div class="flex items-start space-x-3 min-w-[44px] min-h-[44px]">
                 <input 
                   type="checkbox" 
@@ -98,7 +93,6 @@ class FormRegister extends HTMLElement {
                 </label>
               </div>
   
-              <!-- Tombol Daftar -->
               <button 
                 type="submit" 
                 class="w-full py-3 font-semibold text-white rounded-2xl gradient-button">
@@ -106,34 +100,33 @@ class FormRegister extends HTMLElement {
               </button>
             </form>
             
-            <!-- Footer -->
             <p tabindex=0 class="mt-6 text-sm text-center font-medium text-white tracking-wide">
               Sudah punya akun? 
-              <a href="#/login" class="font-bold hover:underline inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-[#002F35]">Login</a>
+              <a href="/login" class="font-bold hover:underline inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-[#002F35]">Login</a>
             </p>
           </div>
         </div>
       `;
- 
+
     this.attachTogglePassword();
     this.attachFormValidation();
   }
- 
+
   validateName(name) {
     if (!name) return 'Nama lengkap harus diisi';
     if (name.length < 3) return 'Nama lengkap minimal 3 karakter';
     if (!/^[a-zA-Z\s]*$/.test(name)) return 'Nama lengkap hanya boleh berisi huruf';
     return null;
   }
- 
+
   validateEmail(email) {
     if (!email) return 'Email harus diisi';
-    
+
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    
+
     if (!email.includes('@')) return 'Email harus mengandung @';
     if (!email.includes('.')) return 'Email harus mengandung domain yang valid';
-    
+
     if (!emailRegex.test(email)) {
       if (email.split('@').length > 2) return 'Email tidak boleh mengandung lebih dari satu @';
       if (email.endsWith('@')) return 'Email harus memiliki domain setelah @';
@@ -141,15 +134,15 @@ class FormRegister extends HTMLElement {
       if (!/^[a-zA-Z0-9._-]+/.test(email)) return 'Email hanya boleh mengandung huruf, angka, titik, underscore, dan dash';
       return 'Format email tidak valid';
     }
- 
+
     const [, domain] = email.split('@');
     if (!domain) return 'Domain email tidak valid';
     if (!domain.includes('.')) return 'Domain email harus mengandung ekstensi yang valid';
     if (domain.startsWith('.') || domain.endsWith('.')) return 'Format domain email tidak valid';
- 
+
     return null;
   }
- 
+
   validatePassword(password) {
     if (!password) return 'Password harus diisi';
     if (password.length < 6) return 'Password minimal 6 karakter';
@@ -158,14 +151,14 @@ class FormRegister extends HTMLElement {
     if (!/[0-9]/.test(password)) return 'Password harus mengandung angka';
     return null;
   }
- 
+
   attachFormValidation() {
     const form = this.querySelector('form');
     const fullnameInput = this.querySelector('#fullname');
     const emailInput = this.querySelector('#email');
     const passwordInput = this.querySelector('#password');
     const termsCheckbox = this.querySelector('#terms');
- 
+
     fullnameInput.addEventListener('input', () => {
       const error = this.validateName(fullnameInput.value.trim());
       if (error) {
@@ -174,7 +167,7 @@ class FormRegister extends HTMLElement {
         fullnameInput.classList.remove('border-red-500');
       }
     });
- 
+
     emailInput.addEventListener('input', () => {
       const error = this.validateEmail(emailInput.value.trim());
       if (error) {
@@ -183,7 +176,7 @@ class FormRegister extends HTMLElement {
         emailInput.classList.remove('border-red-500');
       }
     });
- 
+
     passwordInput.addEventListener('input', () => {
       const error = this.validatePassword(passwordInput.value);
       if (error) {
@@ -192,7 +185,7 @@ class FormRegister extends HTMLElement {
         passwordInput.classList.remove('border-red-500');
       }
     });
- 
+
     fullnameInput.addEventListener('blur', () => {
       const error = this.validateName(fullnameInput.value.trim());
       if (error) {
@@ -204,7 +197,7 @@ class FormRegister extends HTMLElement {
         });
       }
     });
- 
+
     emailInput.addEventListener('blur', () => {
       const error = this.validateEmail(emailInput.value.trim());
       if (error) {
@@ -216,10 +209,10 @@ class FormRegister extends HTMLElement {
         });
       }
     });
- 
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-    
+
       const nameError = this.validateName(fullnameInput.value.trim());
       if (nameError) {
         Swal.fire({
@@ -230,7 +223,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
-    
+
       const emailError = this.validateEmail(emailInput.value.trim());
       if (emailError) {
         Swal.fire({
@@ -241,7 +234,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
-    
+
       const passwordError = this.validatePassword(passwordInput.value);
       if (passwordError) {
         Swal.fire({
@@ -252,7 +245,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
-    
+
       if (!termsCheckbox.checked) {
         Swal.fire({
           title: 'Syarat dan Ketentuan',
@@ -262,7 +255,7 @@ class FormRegister extends HTMLElement {
         });
         return;
       }
-    
+
       let loadingSwal;
       try {
         loadingSwal = Swal.fire({
@@ -274,19 +267,19 @@ class FormRegister extends HTMLElement {
             Swal.showLoading();
           }
         });
-    
+
         const userData = {
           nama: fullnameInput.value.trim(),
           email: emailInput.value.trim(),
           password: passwordInput.value
         };
-    
+
         const response = await AuthService.register(userData);
-    
+
         if (loadingSwal) {
           loadingSwal.close();
         }
-    
+
         if (response.status === 'success') {
           await Swal.fire({
             title: 'Berhasil!',
@@ -294,19 +287,19 @@ class FormRegister extends HTMLElement {
             icon: 'success',
             confirmButtonText: 'Ok'
           });
-    
+
           form.reset();
-          window.location.hash = '#/login';
+          window.location.hash = '/login';
         } else {
           throw new Error(response.message || 'Terjadi kesalahan saat mendaftar');
         }
       } catch (error) {
         console.error('Registration Error:', error);
-        
+
         if (loadingSwal) {
           loadingSwal.close();
         }
-        
+
         await Swal.fire({
           title: 'Gagal!',
           text: error.message || 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
@@ -316,26 +309,26 @@ class FormRegister extends HTMLElement {
       }
     });
   }
- 
+
   attachTogglePassword() {
-    const passwordInput = this.querySelector("#password");
-    const togglePassword = this.querySelector("#togglePassword");
-    const toggleIcon = togglePassword.querySelector("i");
- 
-    togglePassword.addEventListener("click", (e) => {
+    const passwordInput = this.querySelector('#password');
+    const togglePassword = this.querySelector('#togglePassword');
+    const toggleIcon = togglePassword.querySelector('i');
+
+    togglePassword.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      
+
       this.isTogglingPassword = true;
-      const isPassword = passwordInput.type === "password";
-      passwordInput.type = isPassword ? "text" : "password";
-      toggleIcon.textContent = isPassword ? "visibility_off" : "visibility";
-      
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+
       setTimeout(() => {
         this.isTogglingPassword = false;
       }, 100);
     });
   }
 }
- 
-customElements.define("form-register", FormRegister);
+
+customElements.define('form-register', FormRegister);

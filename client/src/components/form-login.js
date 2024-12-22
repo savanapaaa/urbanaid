@@ -1,17 +1,16 @@
 import AuthService from '../services/auth-service';
 
 class FormLogin extends HTMLElement {
-    constructor() {
-      super();
-      this.isTogglingPassword = false;
-    }
-  
-    connectedCallback() {
-      this.innerHTML = `
+  constructor() {
+    super();
+    this.isTogglingPassword = false;
+  }
+
+  connectedCallback() {
+    this.innerHTML = `
         <div class="backdrop-blur-sm bg-white/30 p-6 sm:p-8 rounded-lg shadow-lg max-w-sm sm:max-w-md w-full border border-white/50">
           <div class="flex items-center mb-6">
-            <!-- Tombol Kembali -->
-            <a href="#/" 
+            <a href="/" 
                class="text-white hover:text-[#00899B] transition-colors duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                aria-label="Kembali ke beranda">
               <i class="material-icons-round">arrow_back</i>
@@ -23,7 +22,6 @@ class FormLogin extends HTMLElement {
           </div>
           
           <form class="space-y-6">
-            <!-- Input Email -->
             <div class="relative">
               <input 
                 type="email" 
@@ -44,7 +42,6 @@ class FormLogin extends HTMLElement {
               </label>
             </div>
 
-            <!-- Input Password -->
             <div class="relative">
               <input 
                 type="password" 
@@ -68,7 +65,6 @@ class FormLogin extends HTMLElement {
               </label>
             </div>
 
-            <!-- Checkbox Remember Me -->
             <div class="flex items-center justify-between">
               <div class="flex items-start space-x-3 min-w-[44px] min-h-[44px]">
                 <input 
@@ -88,7 +84,6 @@ class FormLogin extends HTMLElement {
               </a>
             </div>
 
-            <!-- Tombol Login -->
             <button 
               type="submit" 
               class="w-full py-3 font-semibold text-white rounded-2xl gradient-button">
@@ -96,176 +91,178 @@ class FormLogin extends HTMLElement {
             </button>
           </form>
           
-          <!-- Footer -->
           <p tabindex=0 class="mt-6 text-sm text-center font-medium text-white tracking-wide">
             Belum punya akun? 
-            <a href="#/register" class="font-bold hover:underline inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-[#002F35]">Daftar</a>
+            <a href="/register" class="font-bold hover:underline inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-[#002F35]">Daftar</a>
           </p>
         </div>
       `;
-   
-      this.attachTogglePassword();
-      this.attachFormValidation();
-    }
-   
-    validateEmail(email) {
-      if (!email) return 'Email harus diisi';
-      
-      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-      
-      if (!email.includes('@')) return 'Email harus mengandung @';
-      if (!email.includes('.')) return 'Email harus mengandung domain yang valid';
-      
-      if (!emailRegex.test(email)) {
-        if (email.split('@').length > 2) return 'Email tidak boleh mengandung lebih dari satu @';
-        if (email.endsWith('@')) return 'Email harus memiliki domain setelah @';
-        if (email.startsWith('@')) return 'Email harus memiliki username sebelum @';
-        if (!/^[a-zA-Z0-9._-]+/.test(email)) return 'Email hanya boleh mengandung huruf, angka, titik, underscore, dan dash';
-        return 'Format email tidak valid';
-      }
-   
-      const [, domain] = email.split('@');
-      if (!domain) return 'Domain email tidak valid';
-      if (!domain.includes('.')) return 'Domain email harus mengandung ekstensi yang valid';
-      if (domain.startsWith('.') || domain.endsWith('.')) return 'Format domain email tidak valid';
-   
-      return null;
-    }
-   
-    validatePassword(password) {
-      if (!password) return 'Password harus diisi';
-      if (password.length < 6) return 'Password minimal 6 karakter';
-      return null;
-    }
-   
-    attachFormValidation() {
-      const form = this.querySelector('form');
-      const emailInput = this.querySelector('#email');
-      const passwordInput = this.querySelector('#password');
-      const rememberCheckbox = this.querySelector('#remember');
-   
-      emailInput.addEventListener('input', () => {
-        const error = this.validateEmail(emailInput.value.trim());
-        if (error) {
-          emailInput.classList.add('border-red-500');
-        } else {
-          emailInput.classList.remove('border-red-500');
-        }
-      });
-   
-      passwordInput.addEventListener('input', () => {
-        const error = this.validatePassword(passwordInput.value);
-        if (error) {
-          passwordInput.classList.add('border-red-500');
-        } else {
-          passwordInput.classList.remove('border-red-500');
-        }
-      });
-   
-      emailInput.addEventListener('blur', () => {
-        const error = this.validateEmail(emailInput.value.trim());
-        if (error) {
-          Swal.fire({
-            title: 'Format Email Salah',
-            text: error,
-            icon: 'error',
-            confirmButtonText: 'Ok'
-          });
-        }
-      });
-   
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-      
-        const emailError = this.validateEmail(emailInput.value.trim());
-        if (emailError) {
-          Swal.fire({
-            title: 'Format Email Salah',
-            text: emailError,
-            icon: 'error',
-            confirmButtonText: 'Ok'
-          });
-          return;
-        }
-      
-        const passwordError = this.validatePassword(passwordInput.value);
-        if (passwordError) {
-          Swal.fire({
-            title: 'Format Password Salah',
-            text: passwordError,
-            icon: 'error',
-            confirmButtonText: 'Ok'
-          });
-          return;
-        }
-      
-        try {
-          Swal.fire({
-            title: 'Memproses',
-            text: 'Mohon tunggu...',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            willOpen: () => {
-              Swal.showLoading();
-            }
-          });
-      
-          const response = await AuthService.login(
-            emailInput.value.trim(), 
-            passwordInput.value
-          );
-      
-          if (response.status === 'success') {
-            if (rememberCheckbox.checked) {
-              localStorage.setItem('remember_token', response.data.token);
-            }
 
-            await Swal.fire({
-              title: 'Berhasil!',
-              text: 'Login berhasil',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            });
-      
-            form.reset();
-            
-            window.location.hash = '#/';
-            window.location.reload();
-          } else {
-            throw new Error(response.message || 'Email atau password salah');
+    this.attachTogglePassword();
+    this.attachFormValidation();
+  }
+
+  validateEmail(email) {
+    if (!email) return 'Email harus diisi';
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (!email.includes('@')) return 'Email harus mengandung @';
+    if (!email.includes('.')) return 'Email harus mengandung domain yang valid';
+
+    if (!emailRegex.test(email)) {
+      if (email.split('@').length > 2) return 'Email tidak boleh mengandung lebih dari satu @';
+      if (email.endsWith('@')) return 'Email harus memiliki domain setelah @';
+      if (email.startsWith('@')) return 'Email harus memiliki username sebelum @';
+      if (!/^[a-zA-Z0-9._-]+/.test(email)) return 'Email hanya boleh mengandung huruf, angka, titik, underscore, dan dash';
+      return 'Format email tidak valid';
+    }
+
+    const [, domain] = email.split('@');
+    if (!domain) return 'Domain email tidak valid';
+    if (!domain.includes('.')) return 'Domain email harus mengandung ekstensi yang valid';
+    if (domain.startsWith('.') || domain.endsWith('.')) return 'Format domain email tidak valid';
+
+    return null;
+  }
+
+  validatePassword(password) {
+    if (!password) return 'Password harus diisi';
+    if (password.length < 6) return 'Password minimal 6 karakter';
+    return null;
+  }
+
+  attachFormValidation() {
+    const form = this.querySelector('form');
+    const emailInput = this.querySelector('#email');
+    const passwordInput = this.querySelector('#password');
+    const rememberCheckbox = this.querySelector('#remember');
+
+    emailInput.addEventListener('input', () => {
+      const error = this.validateEmail(emailInput.value.trim());
+      if (error) {
+        emailInput.classList.add('border-red-500');
+      } else {
+        emailInput.classList.remove('border-red-500');
+      }
+    });
+
+    passwordInput.addEventListener('input', () => {
+      const error = this.validatePassword(passwordInput.value);
+      if (error) {
+        passwordInput.classList.add('border-red-500');
+      } else {
+        passwordInput.classList.remove('border-red-500');
+      }
+    });
+
+    emailInput.addEventListener('blur', () => {
+      const error = this.validateEmail(emailInput.value.trim());
+      if (error) {
+        Swal.fire({
+          title: 'Format Email Salah',
+          text: error,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const emailError = this.validateEmail(emailInput.value.trim());
+      if (emailError) {
+        Swal.fire({
+          title: 'Format Email Salah',
+          text: emailError,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+        return;
+      }
+
+      const passwordError = this.validatePassword(passwordInput.value);
+      if (passwordError) {
+        Swal.fire({
+          title: 'Format Password Salah',
+          text: passwordError,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+        return;
+      }
+
+      try {
+        Swal.fire({
+          title: 'Memproses',
+          text: 'Mohon tunggu...',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          willOpen: () => {
+            Swal.showLoading();
           }
-        } catch (error) {
-          console.error('Login Error:', error);
-          
+        });
+
+        const response = await AuthService.login(
+          emailInput.value.trim(),
+          passwordInput.value
+        );
+
+        if (response.status === 'success') {
+          if (rememberCheckbox.checked) {
+            localStorage.setItem('remember_token', response.data.token);
+          }
+
           await Swal.fire({
-            title: 'Gagal!',
-            text: error.message || 'Email atau password salah. Silakan coba lagi.',
-            icon: 'error',
+            title: 'Berhasil!',
+            text: 'Login berhasil',
+            icon: 'success',
             confirmButtonText: 'Ok'
           });
+
+          form.reset();
+
+          const user = response.data.user;
+          if (user.role === 'admin' || user.role === 'superadmin') {
+            window.location.href = 'http://localhost:9000/admin';
+          } else {
+            window.location.href = 'http://localhost:9000';
+          }
+        } else {
+          throw new Error(response.message || 'Email atau password salah');
         }
-      });
-    }
-   
-    attachTogglePassword() {
-      const passwordInput = this.querySelector("#password");
-      const togglePassword = this.querySelector("#togglePassword");
-      const toggleIcon = togglePassword.querySelector("i");
-   
-      togglePassword.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        this.isTogglingPassword = true;
-        const isPassword = passwordInput.type === "password";
-        passwordInput.type = isPassword ? "text" : "password";
-        toggleIcon.textContent = isPassword ? "visibility_off" : "visibility";
-        
-        setTimeout(() => {
-          this.isTogglingPassword = false;
-        }, 100);
-      });
-    }
+      } catch (error) {
+        console.error('Login Error:', error);
+        await Swal.fire({
+          title: 'Gagal!',
+          text: error.message || 'Email atau password salah. Silakan coba lagi.',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
+    });
   }
-   
-  customElements.define("form-login", FormLogin);
+
+  attachTogglePassword() {
+    const passwordInput = this.querySelector('#password');
+    const togglePassword = this.querySelector('#togglePassword');
+    const toggleIcon = togglePassword.querySelector('i');
+
+    togglePassword.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      this.isTogglingPassword = true;
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+
+      setTimeout(() => {
+        this.isTogglingPassword = false;
+      }, 100);
+    });
+  }
+}
+
+customElements.define('form-login', FormLogin);

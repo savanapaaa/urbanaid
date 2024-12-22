@@ -1,4 +1,5 @@
-import "../components/form-register.js";
+import '../components/form-register.js';
+import Loading from '../components/common/Loading.js';
 
 const RegisterPage = {
   render() {
@@ -14,9 +15,13 @@ const RegisterPage = {
   },
 
   async init() {
-    const app = document.getElementById("app");
+    const app = document.getElementById('app');
     app.innerHTML = this.render();
   },
+
+  cleanup() {
+    Loading.hide();
+  }
 };
 
 export default RegisterPage;

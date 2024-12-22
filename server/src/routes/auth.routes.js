@@ -1,6 +1,5 @@
 const AuthController = require('../controllers/auth-controller');
 const { validateToken } = require('../middleware/auth');
-
 const routes = [
   {
     method: 'POST',
@@ -27,6 +26,22 @@ const routes = [
       pre: [validateToken],
     },
   },
+  {
+    method: 'PUT',
+    path: '/api/auth/profile/{id}',
+    handler: AuthController.updateProfile,
+    options: {
+      auth: 'jwt',
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/api/auth/admin/profile/{id}',
+    handler: AuthController.updateAdminProfile,
+    options: {
+      auth: 'jwt',
+      pre: [validateToken],
+    },
+  },
 ];
-
 module.exports = routes;
