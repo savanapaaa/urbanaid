@@ -245,6 +245,7 @@ const HomePage = {
     
                 <div class="container mx-auto px-4">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+<<<<<<< HEAD
                         <div class="w-full md:w-1/2 md:order-2" data-aos="fade-left">
                             <div class="relative tilt-card">
                                 <picture>
@@ -267,6 +268,11 @@ const HomePage = {
                                     />
                                 </picture>
 
+=======
+                        <div class="w-full md:w-1/2 md:order-2">
+                            <div class="relative">
+                                <img src="/images/hero-section1.png" alt="Urban Infrastructure Hero" class="hero-image rounded-2xl">
+>>>>>>> dcaaf93535da2d560c0c2511e1b6fb705511ec14
                             </div>
                         </div>
                         <div class="w-full md:w-1/2 text-center md:text-left md:order-1" data-aos="fade-right">

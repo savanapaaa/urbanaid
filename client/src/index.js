@@ -2,8 +2,17 @@ import './styles/main.css';
 import './styles/responsive.css';
 import './styles/elemen.css';
 import './styles/swal.css';
+<<<<<<< HEAD
 import './styles/admin.css';
 import swRegister from './utils/sw-register';
+=======
+import './styles/laporanaktif.css'; 
+// import './styles/riwayat.css';  
+import './styles/detail.css';  
+import './styles/tentangkami.css';
+
+// Import App
+>>>>>>> dcaaf93535da2d560c0c2511e1b6fb705511ec14
 import App from './App';
 
 const initApp = async () => {
