@@ -115,4 +115,3 @@ npm test
 ISC License
 
 ---
-Made with ❤️ by UrbanAID Team
