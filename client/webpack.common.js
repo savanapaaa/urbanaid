@@ -98,19 +98,19 @@ module.exports = {
       ],
     }),
 
-    new WorkboxWebpackPlugin.InjectManifest({
-      swSrc: '/src/utils/sw.js',
-      swDest: 'sw.js',
-      mode: 'production',
-      maximumFileSizeToCacheInBytes: 5000000,
-      exclude: [
-        /\.map$/,
-        /manifest$/,
-        /\.htaccess$/,
-        /service-worker\.js$/,
-        /sw\.js$/,
-      ],
-    }),
+    // new WorkboxWebpackPlugin.InjectManifest({
+    //   swSrc: '/src/utils/sw.js',
+    //   swDest: 'sw.js',
+    //   mode: 'production',
+    //   maximumFileSizeToCacheInBytes: 5000000,
+    //   exclude: [
+    //     /\.map$/,
+    //     /manifest$/,
+    //     /\.htaccess$/,
+    //     /service-worker\.js$/,
+    //     /sw\.js$/,
+    //   ],
+    // }),
     new BundleAnalyzerPlugin(),
     new ImageminWebpWebpackPlugin({
         config: [
