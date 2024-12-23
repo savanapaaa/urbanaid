@@ -1,48 +1,51 @@
-# UrbanAID
+# 🌆 UrbanAID
 
-UrbanAID adalah aplikasi web untuk pelaporan dan sosialisasi infrastruktur. Aplikasi ini memungkinkan pengguna untuk melaporkan masalah infrastruktur dan mengakses konten edukasi tentang infrastruktur.
+> 🏗️ Platform pelaporan dan sosialisasi infrastruktur modern
 
-## Features
+UrbanAID adalah aplikasi web yang memungkinkan pengguna untuk melaporkan masalah infrastruktur dan mengakses konten edukasi tentang infrastruktur perkotaan.
 
-### User Features
-- Otentikasi pengguna (login/registrasi)
-- Sistem pelaporan infrastruktur
-- Pelacakan laporan aktif
-- Riwayat laporan
-- Profil pengguna
-- Artikel edukasi
-- Sumber belajar tentang infrastruktur
+## ✨ Fitur Utama
 
-### Admin Features
-- Mengelola laporan masuk
-- Menangani ulasan laporan
-- Manajemen pengguna
-- Manajemen admin (super admin)
-- Dashboard statistik
+### 👤 Fitur Pengguna
+- 🔐 Otentikasi pengguna (login/registrasi)
+- 📝 Sistem pelaporan infrastruktur
+- 🔍 Pelacakan laporan aktif
+- 📊 Riwayat laporan
+- 👤 Profil pengguna
+- 📚 Artikel edukasi
+- 🎓 Sumber belajar tentang infrastruktur
 
-## Tech Stack
+### 👨‍💼 Fitur Admin
+- 📨 Mengelola laporan masuk
+- ✅ Menangani ulasan laporan
+- 👥 Manajemen pengguna
+- 🔑 Manajemen admin (super admin)
+- 📈 Dashboard statistik
 
-### Frontend
-- JavaScript (Vanilla)
-- Tailwind CSS
-- Webpack
-- PWA Support
-- Jest for testing
+## 🛠️ Tech Stack
 
-### Backend
-- Node.js
-- Hapi.js
-- PostgreSQL
-- JWT Authentication
-- Jest for testing
+### 🎨 Frontend
+- ⚡ JavaScript (Vanilla)
+- 💅 Tailwind CSS
+- 📦 Webpack
+- 📱 PWA Support
+- 🧪 Jest for testing
 
-## API Documentation
-https://urbanaid-api.vercel.app/
+### ⚙️ Backend
+- 🟢 Node.js
+- 🚀 Hapi.js
+- 🐘 PostgreSQL
+- 🔒 JWT Authentication
+- 🧪 Jest for testing
 
-## Setup Instructions
+## 📚 API Documentation
+📖 [API Documentation](https://urbanaid-api.vercel.app/)
 
-### Frontend Setup
-1. Navigate to the client directory:
+## 🚀 Setup Instructions
+
+### 🎨 Frontend Setup
+
+1. Masuk ke direktori client:
 ```bash
 cd client
 ```
@@ -52,18 +55,19 @@ cd client
 npm install
 ```
 
-3. Run development server:
+3. Jalankan development server:
 ```bash
 npm run start-dev
 ```
 
-4. Build for production:
+4. Build untuk production:
 ```bash
 npm run build
 ```
 
-### Backend Setup
-1. Navigate to the server directory:
+### ⚙️ Backend Setup
+
+1. Masuk ke direktori server:
 ```bash
 cd server
 ```
@@ -73,27 +77,27 @@ cd server
 npm install
 ```
 
-3. Set up environment variables:
+3. Setup environment variables:
 ```bash
 cp .env.example .env
 ```
 
-4. Create database and run migrations:
+4. Buat database dan jalankan migrations:
 ```bash
-# Create your PostgreSQL database and update .env file
+# Buat database PostgreSQL Anda dan update file .env
 ```
 
-5. Create super admin (optional):
+5. Buat super admin (opsional):
 ```bash
 npm run create-superadmin
 ```
 
-6. Run development server:
+6. Jalankan development server:
 ```bash
 npm run dev
 ```
 
-## Testing
+## 🧪 Testing
 
 ### Frontend Tests
 ```bash
@@ -107,6 +111,8 @@ cd server
 npm test
 ```
 
-## License
-
+## 📝 License
 ISC License
+
+---
+Made with ❤️ by UrbanAID Team
