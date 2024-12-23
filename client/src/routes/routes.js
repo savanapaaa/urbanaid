@@ -14,6 +14,7 @@ import ManagementUser from '../pages/Admin/ManagementUser';
 import ManagementAdmin from '../pages/Admin/ManagementAdmin';
 import RouteGuard from '../utils/route-guard';
 import AdminProfile from '../pages/Admin/AdminProfile';
+import ResetPasswordPage from '../pages/reset-password';
 
 const routes = {
   // Public routes
@@ -22,6 +23,7 @@ const routes = {
   '/tentang-kami': TentangKami,
   '/register': RouteGuard.publicOnly(RegisterPage),
   '/login': RouteGuard.publicOnly(LoginPage),
+  '/forgot-password': RouteGuard.publicOnly(ResetPasswordPage),
 
   // Protected user routes
   '/pelaporan': RouteGuard.checkUser(PelaporanPage),

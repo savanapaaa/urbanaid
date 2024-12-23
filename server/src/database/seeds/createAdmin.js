@@ -11,7 +11,7 @@ async function seedAdmin() {
   ];
 
   const missingEnvVars = requiredEnvVars.filter(
-    varName => !process.env[varName]
+    (varName) => !process.env[varName]
   );
 
   if (missingEnvVars.length > 0) {

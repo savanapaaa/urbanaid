@@ -75,7 +75,7 @@ const ReportController = {
     try {
       const { id } = request.params;
       const report = await ReportModel.getReportById(id);
-      
+
       if (!report) {
         return h.response({
           status: 'fail',
@@ -98,43 +98,43 @@ const ReportController = {
 
   async updateReport(request, h) {
     try {
-        const { payload } = request;
-        let fileUrl = payload.bukti_lampiran;
+      const { payload } = request;
+      let fileUrl = payload.bukti_lampiran;
 
-        if (payload.bukti_lampiran && typeof payload.bukti_lampiran !== 'string') {
-            fileUrl = await StorageService.uploadFile(payload.bukti_lampiran);
-        }
+      if (payload.bukti_lampiran && typeof payload.bukti_lampiran !== 'string') {
+        fileUrl = await StorageService.uploadFile(payload.bukti_lampiran);
+      }
 
-        const reportData = {
-            id: request.params.id,
-            judul: payload.judul,
-            jenis_infrastruktur: payload.jenis_infrastruktur,
-            tanggal_kejadian: new Date(payload.tanggal_kejadian),
-            deskripsi: payload.deskripsi,
-            alamat: payload.alamat,
-            bukti_lampiran: fileUrl
-        };
+      const reportData = {
+        id: request.params.id,
+        judul: payload.judul,
+        jenis_infrastruktur: payload.jenis_infrastruktur,
+        tanggal_kejadian: new Date(payload.tanggal_kejadian),
+        deskripsi: payload.deskripsi,
+        alamat: payload.alamat,
+        bukti_lampiran: fileUrl
+      };
 
-        const updatedReport = await ReportModel.updateReport(reportData);
+      const updatedReport = await ReportModel.updateReport(reportData);
 
-        return h.response({
-            status: 'success',
-            message: 'Laporan berhasil diperbarui',
-            data: updatedReport
-        }).code(200);
+      return h.response({
+        status: 'success',
+        message: 'Laporan berhasil diperbarui',
+        data: updatedReport
+      }).code(200);
     } catch (error) {
-        console.error('Error updating report:', error);
-        return h.response({
-            status: 'error',
-            message: 'Terjadi kesalahan saat memperbarui laporan'
-        }).code(500);
+      console.error('Error updating report:', error);
+      return h.response({
+        status: 'error',
+        message: 'Terjadi kesalahan saat memperbarui laporan'
+      }).code(500);
     }
-},
+  },
   async deleteReport(request, h) {
     try {
       const { id } = request.params;
       const deletedReport = await ReportModel.deleteReport(id);
-  
+
       return h.response({
         status: 'success',
         message: 'Laporan berhasil dihapus',
@@ -151,7 +151,7 @@ const ReportController = {
   async getNearbyReports(request, h) {
     try {
       const { latitude, longitude, radius } = request.query;
-      
+
       if (!latitude || !longitude) {
         return h.response({
           status: 'fail',
@@ -160,8 +160,8 @@ const ReportController = {
       }
 
       const reports = await ReportModel.getReportsNearLocation(
-        parseFloat(latitude), 
-        parseFloat(longitude), 
+        parseFloat(latitude),
+        parseFloat(longitude),
         radius ? parseFloat(radius) : 10
       );
 
@@ -179,103 +179,103 @@ const ReportController = {
   },
   async getIncomingReports(request, h) {
     try {
-        const reports = await ReportModel.getIncomingReports(); 
-        
-        return h.response({
-            status: 'success',
-            data: reports
-        }).code(200);
-    } catch (error) {
-        console.error('Error getting incoming reports:', error);
-        return h.response({
-            status: 'error',
-            message: 'Terjadi kesalahan saat mengambil data laporan masuk'
-        }).code(500);
-    }
-},
+      const reports = await ReportModel.getIncomingReports();
 
-async getReportDetail(request, h) {
-  try {
+      return h.response({
+        status: 'success',
+        data: reports
+      }).code(200);
+    } catch (error) {
+      console.error('Error getting incoming reports:', error);
+      return h.response({
+        status: 'error',
+        message: 'Terjadi kesalahan saat mengambil data laporan masuk'
+      }).code(500);
+    }
+  },
+
+  async getReportDetail(request, h) {
+    try {
       const { id } = request.params;
       const report = await ReportModel.getReportDetail(id);
 
       if (!report) {
-          return h.response({
-              status: 'fail',
-              message: 'Laporan tidak ditemukan'
-          }).code(404);
+        return h.response({
+          status: 'fail',
+          message: 'Laporan tidak ditemukan'
+        }).code(404);
       }
 
       return h.response({
-          status: 'success',
-          data: report
+        status: 'success',
+        data: report
       }).code(200);
-  } catch (error) {
+    } catch (error) {
       console.error('Error getting report detail:', error);
       return h.response({
-          status: 'error',
-          message: 'Terjadi kesalahan saat mengambil detail laporan'
+        status: 'error',
+        message: 'Terjadi kesalahan saat mengambil detail laporan'
       }).code(500);
-  }
-},
+    }
+  },
 
-async acceptReport(request, h) {
-  try {
+  async acceptReport(request, h) {
+    try {
       const { id } = request.params;
       const { keterangan } = request.payload;
 
       const report = await ReportModel.getReportDetail(id);
       if (!report) {
-          return h.response({
-              status: 'fail',
-              message: 'Laporan tidak ditemukan'
-          }).code(404);
+        return h.response({
+          status: 'fail',
+          message: 'Laporan tidak ditemukan'
+        }).code(404);
       }
 
       const riwayat = await RiwayatModel.transferToRiwayat(id, 'diterima', keterangan);
 
       return h.response({
-          status: 'success',
-          message: 'Laporan berhasil diterima',
-          data: riwayat
+        status: 'success',
+        message: 'Laporan berhasil diterima',
+        data: riwayat
       }).code(200);
-  } catch (error) {
+    } catch (error) {
       console.error('Error accepting report:', error);
       return h.response({
-          status: 'error',
-          message: 'Terjadi kesalahan saat memproses laporan'
+        status: 'error',
+        message: 'Terjadi kesalahan saat memproses laporan'
       }).code(500);
-  }
-},
+    }
+  },
 
-async rejectReport(request, h) {
-  try {
+  async rejectReport(request, h) {
+    try {
       const { id } = request.params;
       const { keterangan } = request.payload;
 
       const report = await ReportModel.getReportDetail(id);
       if (!report) {
-          return h.response({
-              status: 'fail',
-              message: 'Laporan tidak ditemukan'
-          }).code(404);
+        return h.response({
+          status: 'fail',
+          message: 'Laporan tidak ditemukan'
+        }).code(404);
       }
 
       const riwayat = await RiwayatModel.transferToRiwayat(id, 'ditolak', keterangan);
 
       return h.response({
-          status: 'success',
-          message: 'Laporan berhasil ditolak',
-          data: riwayat
+        status: 'success',
+        message: 'Laporan berhasil ditolak',
+        data: riwayat
       }).code(200);
-  } catch (error) {
+    } catch (error) {
       console.error('Error rejecting report:', error);
       return h.response({
-          status: 'error',
-          message: 'Terjadi kesalahan saat memproses laporan'
+        status: 'error',
+        message: 'Terjadi kesalahan saat memproses laporan'
       }).code(500);
+    }
   }
-}
 };
 
 module.exports = ReportController;

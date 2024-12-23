@@ -16,26 +16,27 @@ const DetailLaporan = {
       if (!hashedId) {
         throw new Error('ID tidak valid');
       }
-
+  
       if (!window.riwayatData) {
         console.log('Fetching riwayat data...');
         const { default: RiwayatService } = await import('../../services/riwayat-service');
         window.riwayatData = await RiwayatService.getRiwayatByUser();
       }
-
+  
       const searchId = String(hashedId);
       const report = window.riwayatData.find((r) => String(r.id) === searchId);
-
+  
       if (!report) {
         throw new Error(`Laporan dengan ID ${searchId} tidak ditemukan`);
       }
-
+  
       this.data = {
         id: report.id,
         judul: report.judul,
         jenisInfrastruktur: report.jenis_infrastruktur,
         deskripsi: report.deskripsi,
         tanggalKejadian: report.tanggal_kejadian,
+        tanggalPengajuan: report.created_at,
         tanggalSelesai: report.tanggal_selesai,
         alamat: report.alamat,
         status: report.status,
@@ -44,7 +45,7 @@ const DetailLaporan = {
         latitude: report.latitude,
         longitude: report.longitude
       };
-
+  
       await this.checkUserReview();
       return this.data;
     } catch (error) {
@@ -373,11 +374,18 @@ const DetailLaporan = {
                                         </div>
                                     </div>
          
-                                    <div class="space-y-6" data-aos="fade-up" data-aos-delay="400">
+<div class="space-y-6" data-aos="fade-up" data-aos-delay="400">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-500">Tanggal Kejadian</div>
+                                            <div class="mt-1 text-base text-gray-900">
+                                                ${this.formatDate(this.data.tanggalKejadian)}
+                                            </div>
+                                        </div>
+
                                         <div>
                                             <div class="text-sm font-medium text-gray-500">Tanggal Pengajuan</div>
                                             <div class="mt-1 text-base text-gray-900">
-                                                ${this.formatDate(this.data.tanggalKejadian)}
+                                                ${this.formatDate(this.data.tanggalPengajuan)}
                                             </div>
                                         </div>
          

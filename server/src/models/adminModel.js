@@ -46,13 +46,13 @@ class AdminModel {
     try {
       let query;
       let params;
-  
+
       if (!email) {
         throw new Error('Email is required');
       }
-  
+
       console.log('Updating admin with data:', { nama, email, hasPassword: !!password });
-  
+
       if (password) {
         query = `
           UPDATE admins 
@@ -68,20 +68,20 @@ class AdminModel {
           RETURNING id, nama, email, role`;
         params = [nama, email, id];
       }
-  
+
       const result = await pool.query(query, params);
-      
+
       if (result.rows.length === 0) {
         throw new Error('Admin not found');
       }
-  
+
       return result.rows[0];
     } catch (error) {
       console.error('Error in AdminModel.update:', error);
       throw error;
     }
   }
-  
+
 
 }
 

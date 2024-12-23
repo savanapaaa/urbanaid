@@ -7,7 +7,7 @@ const statisticsRoutes = require('./routes/statistics.routes');
 const reportRoutes = require('./routes/report.routes');
 const riwayatRoutes = require('./routes/riwayat.routes');
 const reviewRoutes = require('./routes/review.routes');
-const superadminRoutes = require('./routes/superadmin.routes'); 
+const superadminRoutes = require('./routes/superadmin.routes');
 require('dotenv').config();
 
 const validate = async (decoded, request, h) => {
@@ -94,7 +94,7 @@ const init = async () => {
     ...reportRoutes,
     ...riwayatRoutes,
     ...reviewRoutes,
-    ...superadminRoutes  
+    ...superadminRoutes
   ];
 
   server.route(routes);
@@ -111,7 +111,7 @@ const init = async () => {
     console.log('Registering routes:');
     routes.forEach((route) => {
       if (Array.isArray(route.method)) {
-        route.method.forEach(method => {
+        route.method.forEach((method) => {
           console.log(`  ${method.toUpperCase()} ${route.path}`);
         });
       } else {

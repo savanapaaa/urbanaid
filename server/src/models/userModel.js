@@ -51,7 +51,7 @@ class UserModel {
     const result = await pool.query(query, [nama, email, id, 'user']);
     return result.rows[0];
   }
-  
+
   static async updatePassword(id, hashedPassword) {
     const query = `
       UPDATE users 

@@ -40,13 +40,13 @@ async function generateAllIcons() {
   console.log('Mulai generate icons...');
   console.log('Input image:', inputImage);
   console.log('Output directory:', outputDir);
-  
+
   try {
     if (!fs.existsSync(inputImage)) {
       throw new Error(`File input tidak ditemukan: ${inputImage}`);
     }
 
-    await Promise.all(sizes.map(size => generateCircularIcon(size)));
+    await Promise.all(sizes.map((size) => generateCircularIcon(size)));
     console.log('\nSemua icon berhasil di-generate! 🎉');
     console.log(`Icons tersimpan di: ${outputDir}`);
   } catch (error) {

@@ -289,7 +289,7 @@ class FormRegister extends HTMLElement {
           });
 
           form.reset();
-          window.location.hash = '/login';
+          window.location.href = '/login';
         } else {
           throw new Error(response.message || 'Terjadi kesalahan saat mendaftar');
         }

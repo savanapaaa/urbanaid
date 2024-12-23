@@ -78,7 +78,7 @@ class FormLogin extends HTMLElement {
                 </label>
               </div>
               
-              <a href="#/forgot-password" 
+              <a href="/forgot-password" 
                  class="text-sm font-medium text-white hover:text-[#00899B] transition-colors duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center tracking-wide">
                 Lupa Password?
               </a>
@@ -170,7 +170,7 @@ class FormLogin extends HTMLElement {
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
+  
       const emailError = this.validateEmail(emailInput.value.trim());
       if (emailError) {
         Swal.fire({
@@ -181,7 +181,7 @@ class FormLogin extends HTMLElement {
         });
         return;
       }
-
+  
       const passwordError = this.validatePassword(passwordInput.value);
       if (passwordError) {
         Swal.fire({
@@ -192,7 +192,7 @@ class FormLogin extends HTMLElement {
         });
         return;
       }
-
+  
       try {
         Swal.fire({
           title: 'Memproses',
@@ -203,31 +203,28 @@ class FormLogin extends HTMLElement {
             Swal.showLoading();
           }
         });
-
+  
         const response = await AuthService.login(
           emailInput.value.trim(),
-          passwordInput.value
+          passwordInput.value,
+          rememberCheckbox.checked // Kirim status checkbox ke API
         );
-
+  
         if (response.status === 'success') {
-          if (rememberCheckbox.checked) {
-            localStorage.setItem('remember_token', response.data.token);
-          }
-
           await Swal.fire({
             title: 'Berhasil!',
             text: 'Login berhasil',
             icon: 'success',
             confirmButtonText: 'Ok'
           });
-
+  
           form.reset();
-
+  
           const user = response.data.user;
           if (user.role === 'admin' || user.role === 'superadmin') {
-            window.location.href = 'http://localhost:9000/admin';
+            window.location.href = '/admin';
           } else {
-            window.location.href = 'http://localhost:9000';
+            window.location.href = '/pelaporan';
           }
         } else {
           throw new Error(response.message || 'Email atau password salah');

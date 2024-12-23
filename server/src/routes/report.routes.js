@@ -79,7 +79,7 @@ const routes = [
     path: '/api/reports/nearby',
     handler: ReportController.getNearbyReports,
     options: {
-      auth: 'jwt' 
+      auth: 'jwt'
     }
   },
   {
@@ -87,36 +87,36 @@ const routes = [
     path: '/api/reports/incoming',
     handler: ReportController.getIncomingReports,
     options: {
-        auth: 'jwt'
-    }
-},
-{
-  method: 'GET',
-  path: '/api/reports/detail/{id}',
-  handler: ReportController.getReportDetail,
-  options: {
       auth: 'jwt'
-  }
-},
+    }
+  },
+  {
+    method: 'GET',
+    path: '/api/reports/detail/{id}',
+    handler: ReportController.getReportDetail,
+    options: {
+      auth: 'jwt'
+    }
+  },
 
-{
-  method: 'POST',
-  path: '/api/reports/{id}/accept',
-  handler: ReportController.acceptReport,
-  options: {
+  {
+    method: 'POST',
+    path: '/api/reports/{id}/accept',
+    handler: ReportController.acceptReport,
+    options: {
       auth: 'jwt',
       pre: [validateToken, verifyAdmin]
-  }
-},
-{
-  method: 'POST',
-  path: '/api/reports/{id}/reject',
-  handler: ReportController.rejectReport,
-  options: {
+    }
+  },
+  {
+    method: 'POST',
+    path: '/api/reports/{id}/reject',
+    handler: ReportController.rejectReport,
+    options: {
       auth: 'jwt',
       pre: [validateToken, verifyAdmin]
+    }
   }
-}
 ];
 
 module.exports = routes;

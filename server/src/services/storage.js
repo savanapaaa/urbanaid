@@ -13,7 +13,7 @@ const StorageService = {
   async uploadFile(file) {
     try {
       const result = await cloudinary.uploader.upload(file.path, {
-        folder: 'reports', 
+        folder: 'reports',
         use_filename: true,
         unique_filename: true,
         overwrite: true,

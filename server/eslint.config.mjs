@@ -1,10 +1,12 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
+import daStyle from 'eslint-config-dicodingacademy';
 
-
-/** @type {import('eslint').Linter.Config[]} */
 export default [
-  {files: ["**/*.js"], languageOptions: {sourceType: "script"}},
-  {languageOptions: { globals: globals.browser }},
-  pluginJs.configs.recommended,
+  {
+    ...daStyle,
+    rules: {
+      ...daStyle.rules,
+      camelcase: 'off',
+      'no-underscore-dangle': 'off'
+    }
+  }
 ];

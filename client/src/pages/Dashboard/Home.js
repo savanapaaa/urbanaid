@@ -92,71 +92,70 @@ const HomePage = {
 
   initTilt() {
     const isMobile = window.innerWidth < 768;
+    let tiltInstances = [];
 
-    const statsCards = document.querySelectorAll('.stats-card.tilt-card');
-    if (isMobile) {
-      VanillaTilt.init(statsCards, {
-        max: 15,
-        speed: 400,
-        scale: 1.1,
-        glare: true,
-        'max-glare': 0.3,
-        perspective: 800,
-        transition: true,
-        'full-page-listening': true,
-        gyroscope: true,
-        easing: 'cubic-bezier(.03,.98,.52,.99)'
-      });
-    }
+    const initTiltElement = (elements, options) => {
+      if (!isMobile && elements.length > 0) {  
+        const instances = VanillaTilt.init(elements, options);
+        tiltInstances = [...tiltInstances, ...(Array.isArray(instances) ? instances : [instances])];
+      }
+    };
+
+    initTiltElement(document.querySelectorAll('.stats-card.tilt-card'), {
+      max: 15,
+      speed: 400,
+      scale: 1.05,
+      glare: true,
+      'max-glare': 0.3,
+      perspective: 800,
+      transition: true,
+      'full-page-listening': true,
+      gyroscope: false,
+      easing: 'cubic-bezier(.03,.98,.52,.99)'
+    });
 
     const heroImage = document.querySelector('.hero-section .tilt-card');
-    if (heroImage && isMobile) {
-      VanillaTilt.init(heroImage, {
+    if (heroImage) {
+      initTiltElement([heroImage], {
         max: 10,
         speed: 1000,
-        scale: 1.05,
+        scale: 1.03,
         glare: true,
         'max-glare': 0.5,
         perspective: 1000,
         transition: true,
-        gyroscope: true,
+        gyroscope: false,
         easing: 'cubic-bezier(.03,.98,.52,.99)'
       });
     }
 
-    const processCards = document.querySelectorAll('.process-steps-desktop .tilt-card');
-    if (isMobile) {
-      VanillaTilt.init(processCards, {
-        max: 20,
-        speed: 50,
-        scale: 1.1,
-        glare: true,
-        'max-glare': 0.3,
-        perspective: 1000,
-        transition: true,
-        gyroscope: true,
-        easing: 'cubic-bezier(.03,.98,.52,.99)'
-      });
-    }
+    initTiltElement(document.querySelectorAll('.process-steps-desktop .tilt-card'), {
+      max: 20,
+      speed: 200,
+      scale: 1.05,
+      glare: true,
+      'max-glare': 0.3,
+      perspective: 1000,
+      transition: true,
+      gyroscope: false,
+      easing: 'cubic-bezier(.03,.98,.52,.99)'
+    });
 
-    const testimonialCards = document.querySelectorAll('.testimonial-card.tilt-card');
-    if (isMobile) {
-      VanillaTilt.init(testimonialCards, {
-        max: 25,
-        speed: 300,
-        scale: 1.05,
-        glare: true,
-        'max-glare': 0.4,
-        perspective: 1000,
-        transition: true,
-        gyroscope: true,
-        easing: 'cubic-bezier(.03,.98,.52,.99)'
-      });
-    }
+    initTiltElement(document.querySelectorAll('.testimonial-card.tilt-card'), {
+      max: 15,
+      speed: 300,
+      scale: 1.03,
+      glare: true,
+      'max-glare': 0.4,
+      perspective: 1000,
+      transition: true,
+      gyroscope: false,
+      easing: 'cubic-bezier(.03,.98,.52,.99)'
+    });
 
     const infraCard = document.querySelector('.infrastructure-card.tilt-card');
-    if (infraCard && isMobile) {
-      VanillaTilt.init(infraCard, {
+    if (infraCard) {
+      initTiltElement([infraCard], {
         max: 8,
         speed: 800,
         scale: 1.02,
@@ -164,16 +163,29 @@ const HomePage = {
         'max-glare': 0.3,
         perspective: 2000,
         transition: true,
-        gyroscope: true,
+        gyroscope: false,
         easing: 'cubic-bezier(.03,.98,.52,.99)'
       });
     }
 
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      const newIsMobile = window.innerWidth < 768;
-      if (newIsMobile !== isMobile) {
-        window.location.reload();
-      }
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const newIsMobile = window.innerWidth < 768;
+        if (newIsMobile !== isMobile) {
+          tiltInstances.forEach(instance => {
+            if (instance && instance.destroy) {
+              instance.destroy();
+            }
+          });
+          tiltInstances = [];
+          
+          if (!newIsMobile) {
+            this.initTilt();
+          }
+        }
+      }, 250);
     });
   },
 
@@ -245,7 +257,6 @@ const HomePage = {
     
                 <div class="container mx-auto px-4">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-<<<<<<< HEAD
                         <div class="w-full md:w-1/2 md:order-2" data-aos="fade-left">
                             <div class="relative tilt-card">
                                 <picture>
@@ -267,12 +278,6 @@ const HomePage = {
                                         onerror="this.onerror=null; this.src='/images/hero/hero-section.png';"
                                     />
                                 </picture>
-
-=======
-                        <div class="w-full md:w-1/2 md:order-2">
-                            <div class="relative">
-                                <img src="/images/hero-section1.png" alt="Urban Infrastructure Hero" class="hero-image rounded-2xl">
->>>>>>> dcaaf93535da2d560c0c2511e1b6fb705511ec14
                             </div>
                         </div>
                         <div class="w-full md:w-1/2 text-center md:text-left md:order-1" data-aos="fade-right">
@@ -453,102 +458,102 @@ const HomePage = {
 
   createProcessSection() {
     return `
-            <section class="py-16 md:py-20 relative overflow-hidden">
-                <div class="decorative-element top-10 -right-5 w-28 h-28 decoration-teal rotate-45 opacity-20">
-                    <svg class="w-full h-full"><use href="#sparkle"/></svg>
-                </div>
-                <div class="decorative-element bottom-[20%] -left-10 w-32 h-32 decoration-teal opacity-15">
-                    <svg class="w-full h-full"><use href="#flower"/></svg>
-                </div>
-                <div class="container mx-auto px-4 relative z-10">
-                    <h2 class="section-title" data-aos="fade-up">
-                        Alur Pelaporan
-                    </h2>
-    
-                    <!-- Mobile Process Steps -->
-                    <div class="block md:hidden process-steps-mobile">
-                        <div class="flex flex-col items-center" data-aos="fade-up">
-                            <span class="material-icons-round process-icon mb-4" style="font-size: 44px">edit_note</span>
-                            <h3 class="text-lg font-bold mb-3">Tulis Laporan</h3>
-                            <p class="text-gray-700 text-md text-center px-4 mb-4">
-                                Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap
-                            </p>
-                            <div class="process-vertical-line"></div>
-                        </div>
-                        
-                        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="100">
-                            <span class="material-icons-round process-icon mb-4" style="font-size: 44px" >track_changes</span>
-                            <h3 class="text-lg font-bold mb-3">Proses Tindak Lanjut</h3>
-                            <p class="text-md text-gray-700 text-center px-4 mb-4">
-                                Kami menindaklanjuti dan membalas laporan Anda
-                            </p>
-                            <div class="process-vertical-line"></div>
-                        </div>
-    
-                        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="200">
-                            <span class="material-icons-round process-icon mb-4" style="font-size: 44px">task_alt</span>
-                            <h3 class="text-lg font-bold mb-3">Selesai</h3>
-                            <p class="text-md text-gray-700 text-center px-4 mb-4">
-                                Laporan ditindaklanjuti
-                            </p>
-                            <div class="process-vertical-line"></div>
-                        </div>
-    
-                        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="300">
-                            <span class="material-icons-round process-icon mb-4"style="font-size: 44px" >rate_review</span>
-                            <h3 class="text-lg font-bold mb-3">Beri Tanggapan</h3>
-                            <p class="text-md text-gray-700 text-center px-4 mb-4">
-                                Anda dapat menanggapi hasil laporan
-                            </p>
-                        </div>
-                    </div>
-    
-                    <!-- Desktop Process Steps -->
-                    <div class="process-steps-desktop hidden md:block max-w-4xl mx-auto">
-                        <div class="grid grid-cols-4 gap-8 text-center relative">
-                            <div class="absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00899B] to-[#002F35] -z-10"></div>
-                            
-                            <div class="bg-white p-6 rounded-xl tilt-card" data-aos="fade-up">
-                                <span class="material-icons-round mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">edit_note</span>
-                                <h3 class="text-xl font-bold mb-3">Tulis Laporan</h3>
-                                <p class="text-lg text-gray-700">
-                                    Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap
-                                </p>
-                            </div>
+           <section class="py-16 md:py-20 relative overflow-hidden">
+    <div class="decorative-element top-10 -right-5 w-28 h-28 decoration-teal rotate-45 opacity-20">
+        <svg class="w-full h-full"><use href="#sparkle"/></svg>
+    </div>
+    <div class="decorative-element bottom-[20%] -left-10 w-32 h-32 decoration-teal opacity-15">
+        <svg class="w-full h-full"><use href="#flower"/></svg>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+        <h2 class="section-title" data-aos="fade-up">
+            Alur Pelaporan
+        </h2>
 
-                            <div class="bg-white p-6 rounded-xl tilt-card" data-aos="fade-up" data-aos-delay="100">
-                                <span class="material-icons-round text-4xl mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">track_changes</span>
-                                <h3 class="text-xl font-bold mb-3">Proses Tindak Lanjut</h3>
-                                <p class="text-lg text-gray-700">
-                                    Kami menindaklanjuti dan membalas laporan Anda
-                                </p>
-                            </div>
+        <!-- Mobile Process Steps -->
+        <div class="block md:hidden process-steps-mobile">
+            <div class="flex flex-col items-center" data-aos="fade-up">
+                <span class="material-icons-round process-icon mb-4" style="font-size: 44px">edit_note</span>
+                <h3 class="text-lg font-bold mb-3">Tulis Laporan</h3>
+                <p class="text-gray-700 text-md text-center px-4 mb-4">
+                    Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap
+                </p>
+                <div class="process-vertical-line"></div>
+            </div>
+            
+            <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="100">
+                <span class="material-icons-round process-icon mb-4" style="font-size: 44px" >track_changes</span>
+                <h3 class="text-lg font-bold mb-3">Proses Tindak Lanjut</h3>
+                <p class="text-md text-gray-700 text-center px-4 mb-4">
+                    Kami menindaklanjuti dan membalas laporan Anda
+                </p>
+                <div class="process-vertical-line"></div>
+            </div>
 
-                            <div class="bg-white p-6 rounded-xl tilt-card" data-aos="fade-up" data-aos-delay="200">
-                                <span class="material-icons-round text-4xl mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">task_alt</span>
-                                <h3 class="text-xl font-bold mb-3">Selesai</h3>
-                                <p class="text-lg text-gray-700">
-                                    Laporan ditindaklanjuti
-                                </p>
-                            </div>
+            <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="200">
+                <span class="material-icons-round process-icon mb-4" style="font-size: 44px">task_alt</span>
+                <h3 class="text-lg font-bold mb-3">Selesai</h3>
+                <p class="text-md text-gray-700 text-center px-4 mb-4">
+                    Laporan ditindaklanjuti
+                </p>
+                <div class="process-vertical-line"></div>
+            </div>
 
-                            <div class="bg-white p-6 rounded-xl tilt-card" data-aos="fade-up" data-aos-delay="300">
-                                <span class="material-icons-round text-4xl mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">rate_review</span>
-                                <h3 class="text-xl font-bold mb-3">Beri Tanggapan</h3>
-                                <p class="text-lg text-gray-700">
-                                    Anda dapat menanggapi hasil laporan
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="text-center mt-10" data-aos="fade-up" data-aos-delay="400">
-                        <button id="reportButton" class="gradient-button text-white px-6 py-2">
-                            Lapor Sekarang
-                        </button>
-                    </div>
+            <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="300">
+                <span class="material-icons-round process-icon mb-4"style="font-size: 44px" >rate_review</span>
+                <h3 class="text-lg font-bold mb-3">Beri Tanggapan</h3>
+                <p class="text-md text-gray-700 text-center px-4 mb-4">
+                    Anda dapat menanggapi hasil laporan
+                </p>
+            </div>
+        </div>
+
+        <!-- Desktop Process Steps -->
+        <div class="process-steps-desktop hidden md:block max-w-4xl mx-auto">
+            <div class="grid grid-cols-4 gap-8 text-center relative">
+                <div class="absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00899B] to-[#002F35] -z-10"></div>
+                
+                <div class="bg-white p-6 rounded-xl" data-aos="fade-up">
+                    <span class="material-icons-round mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">edit_note</span>
+                    <h3 class="text-xl font-bold mb-3">Tulis Laporan</h3>
+                    <p class="text-lg text-gray-700">
+                        Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap
+                    </p>
                 </div>
-            </section>
+
+                <div class="bg-white p-6 rounded-xl" data-aos="fade-up" data-aos-delay="100">
+                    <span class="material-icons-round text-4xl mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">track_changes</span>
+                    <h3 class="text-xl font-bold mb-3">Proses Tindak Lanjut</h3>
+                    <p class="text-lg text-gray-700">
+                        Kami menindaklanjuti dan membalas laporan Anda
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl" data-aos="fade-up" data-aos-delay="200">
+                    <span class="material-icons-round text-4xl mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">task_alt</span>
+                    <h3 class="text-xl font-bold mb-3">Selesai</h3>
+                    <p class="text-lg text-gray-700">
+                        Laporan ditindaklanjuti
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl" data-aos="fade-up" data-aos-delay="300">
+                    <span class="material-icons-round text-4xl mb-4 bg-gradient-to-r from-[#00899B] to-[#002F35] bg-clip-text text-transparent" style="font-size: 44px">rate_review</span>
+                    <h3 class="text-xl font-bold mb-3">Beri Tanggapan</h3>
+                    <p class="text-lg text-gray-700">
+                        Anda dapat menanggapi hasil laporan
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-10" data-aos="fade-up" data-aos-delay="400">
+            <button id="reportButton" class="gradient-button text-white px-6 py-2">
+                Lapor Sekarang
+            </button>
+        </div>
+    </div>
+</section>
         `;
   },
 

@@ -12,7 +12,7 @@ const StatisticsModel = {
       `;
 
       const result = await db.query(query);
-      
+
       return {
         total: parseInt(result.rows[0].total),
         completed: parseInt(result.rows[0].completed),
@@ -45,7 +45,7 @@ const StatisticsModel = {
       console.error('Error in getReviews:', error);
       throw error;
     }
-},
+  },
 
   async getUserStatistics(userId) {
     try {
@@ -62,7 +62,7 @@ const StatisticsModel = {
       `;
 
       const result = await db.query(query, [userId]);
-      
+
       if (result.rows.length === 0) {
         return {
           totalReports: 0,
@@ -70,7 +70,7 @@ const StatisticsModel = {
           inProgress: 0
         };
       }
-      
+
       return {
         totalReports: parseInt(result.rows[0].total_reports) || 0,
         resolved: parseInt(result.rows[0].resolved) || 0,
@@ -93,7 +93,7 @@ const StatisticsModel = {
             (SELECT COUNT(*) FROM riwayat_laporan)
           ) as total_count;
       `;
-      
+
       const result = await db.query(query);
       return result.rows[0];
     } catch (error) {
@@ -129,7 +129,7 @@ const StatisticsModel = {
         FROM monthly_data
         ORDER BY month ASC;
       `;
-      
+
       const result = await db.query(query);
       return result.rows;
     } catch (error) {
@@ -152,7 +152,7 @@ const StatisticsModel = {
         GROUP BY jenis_infrastruktur
         ORDER BY count DESC;
       `;
-      
+
       const result = await db.query(query);
       return result.rows;
     } catch (error) {
@@ -177,7 +177,7 @@ const StatisticsModel = {
         ORDER BY u.created_at DESC
         LIMIT 10;
       `;
-      
+
       const result = await db.query(query);
       return result.rows;
     } catch (error) {
@@ -201,7 +201,7 @@ const StatisticsModel = {
         WHERE DATE(lm.created_at AT TIME ZONE 'Asia/Jakarta') = CURRENT_DATE
         ORDER BY lm.created_at DESC;
       `;
-  
+
       const result = await db.query(query);
       return result.rows;
     } catch (error) {

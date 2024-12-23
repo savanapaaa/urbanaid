@@ -168,6 +168,18 @@ const AuthService = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getToken()}`
     };
+  },
+
+  async resetPassword(nama, email, newPassword) {
+    const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ nama, email, newPassword }),
+    });
+  
+    return response.json();
   }
 };
 

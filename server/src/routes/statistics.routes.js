@@ -14,7 +14,7 @@ const routes = [
     path: '/api/statistics/reviews',
     handler: statisticsController.getReviews,
     options: {
-      auth: false 
+      auth: false
     }
   },
   {
@@ -30,7 +30,7 @@ const routes = [
     path: '/api/statistics/dashboard',
     handler: statisticsController.getDashboardData,
     options: {
-      auth: false 
+      auth: false
     }
   }
 ];

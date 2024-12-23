@@ -11,7 +11,7 @@ async function createSuperAdmin() {
   ];
 
   const missingEnvVars = requiredEnvVars.filter(
-    varName => !process.env[varName]
+    (varName) => !process.env[varName]
   );
 
   if (missingEnvVars.length > 0) {
@@ -21,32 +21,32 @@ async function createSuperAdmin() {
   }
 
   const client = await pool.connect();
-  
+
   try {
     await client.query('BEGIN');
-    
+
     const checkQuery = 'SELECT * FROM admins WHERE role = $1';
     const existingSuperAdmin = await client.query(checkQuery, ['superadmin']);
-    
+
     if (existingSuperAdmin.rows.length === 0) {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(
-        process.env.SUPER_ADMIN_PASSWORD, 
+        process.env.SUPER_ADMIN_PASSWORD,
         saltRounds
       );
-      
+
       const insertQuery = `
         INSERT INTO admins (nama, email, password, role)
         VALUES ($1, $2, $3, $4)
         RETURNING id, nama, email, role`;
-        
+
       const values = [
         process.env.SUPER_ADMIN_NAME,
         process.env.SUPER_ADMIN_EMAIL,
         hashedPassword,
         'superadmin'
       ];
-      
+
       const result = await client.query(insertQuery, values);
       console.log('Superadmin berhasil dibuat:', {
         id: result.rows[0].id,
@@ -57,7 +57,7 @@ async function createSuperAdmin() {
     } else {
       console.log('Superadmin sudah ada');
     }
-    
+
     await client.query('COMMIT');
   } catch (error) {
     await client.query('ROLLBACK');

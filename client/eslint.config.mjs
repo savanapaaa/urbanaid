@@ -1,5 +1,12 @@
 import daStyle from 'eslint-config-dicodingacademy';
 
 export default [
-  daStyle,
+  {
+    ...daStyle,
+    rules: {
+      ...daStyle.rules,
+      camelcase: 'off',
+      'no-underscore-dangle': 'off'
+    }
+  }
 ];

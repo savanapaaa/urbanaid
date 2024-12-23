@@ -59,7 +59,7 @@ const StatisticService = {
       }
 
       const result = await response.json();
-      console.log('Statistics response:', result);  
+      console.log('Statistics response:', result);
 
       return {
         totalReports: result.data?.totalReports || 0,

@@ -4,14 +4,14 @@ const statisticsController = {
   async getReportStatistics(request, h) {
     try {
       const statistics = await StatisticsModel.getReportStatistics();
-      
+
       return h.response({
         status: 'success',
         data: statistics
       }).code(200);
     } catch (error) {
       console.error('Error in getReportStatistics:', error);
-      
+
       return h.response({
         status: 'error',
         message: 'Terjadi kesalahan saat mengambil data statistik'
@@ -22,14 +22,14 @@ const statisticsController = {
   async getReviews(request, h) {
     try {
       const reviews = await StatisticsModel.getReviews();
-      
+
       return h.response({
         status: 'success',
         data: reviews
       }).code(200);
     } catch (error) {
       console.error('Error in getReviews:', error);
-      
+
       return h.response({
         status: 'error',
         message: 'Terjadi kesalahan saat mengambil data review'
@@ -49,14 +49,14 @@ const statisticsController = {
       }
 
       const statistics = await StatisticsModel.getUserStatistics(userId);
-      
+
       return h.response({
         status: 'success',
         data: statistics
       }).code(200);
     } catch (error) {
       console.error('Error in getUserStatistics:', error);
-      
+
       return h.response({
         status: 'error',
         message: 'Terjadi kesalahan saat mengambil data statistik pengguna'
@@ -70,23 +70,23 @@ const statisticsController = {
         monthlyStats,
         infraTypes,
         recentUsers,
-        todayReports 
+        todayReports
       ] = await Promise.all([
         StatisticsModel.getDashboardStatistics(),
         StatisticsModel.getMonthlyStatistics(),
         StatisticsModel.getInfrastructureTypes(),
         StatisticsModel.getRecentUsers(),
-        StatisticsModel.getTodayReports()  
+        StatisticsModel.getTodayReports()
       ]);
-  
+
       return h.response({
         status: 'success',
         data: {
           dashboard: dashboardStats,
           monthly: monthlyStats,
           infraTypes: infraTypes,
-          recentUsers: recentUsers.slice(0, 5), 
-          todayReports: todayReports 
+          recentUsers: recentUsers.slice(0, 5),
+          todayReports: todayReports
         }
       }).code(200);
     } catch (error) {

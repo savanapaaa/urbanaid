@@ -43,5 +43,13 @@ const routes = [
       pre: [validateToken],
     },
   },
+  {
+    method: 'POST',
+    path: '/api/auth/reset-password',
+    handler: AuthController.resetPassword,
+    options: {
+      auth: false,
+    }
+  }
 ];
 module.exports = routes;

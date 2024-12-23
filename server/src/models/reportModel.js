@@ -49,16 +49,16 @@ const ReportModel = {
 
   async createReport(reportData) {
     const nextId = await dbUtils.getNextAvailableId('laporan_masuk');
-    const { 
-      judul, 
-      jenis_infrastruktur, 
-      tanggal_kejadian, 
-      deskripsi, 
-      alamat, 
-      bukti_lampiran, 
-      user_id 
+    const {
+      judul,
+      jenis_infrastruktur,
+      tanggal_kejadian,
+      deskripsi,
+      alamat,
+      bukti_lampiran,
+      user_id
     } = reportData;
-    
+
     let latitude = null;
     let longitude = null;
     try {
@@ -77,15 +77,15 @@ const ReportModel = {
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
              RETURNING *`,
       values: [
-        nextId, 
-        judul, 
-        jenis_infrastruktur, 
-        tanggal_kejadian, 
-        deskripsi, 
-        alamat, 
-        bukti_lampiran, 
-        user_id, 
-        latitude, 
+        nextId,
+        judul,
+        jenis_infrastruktur,
+        tanggal_kejadian,
+        deskripsi,
+        alamat,
+        bukti_lampiran,
+        user_id,
+        latitude,
         longitude
       ]
     };
@@ -99,16 +99,16 @@ const ReportModel = {
   },
 
   async updateReport(reportData) {
-    const { 
-      id, 
-      judul, 
-      jenis_infrastruktur, 
-      tanggal_kejadian, 
-      deskripsi, 
-      alamat, 
-      bukti_lampiran 
+    const {
+      id,
+      judul,
+      jenis_infrastruktur,
+      tanggal_kejadian,
+      deskripsi,
+      alamat,
+      bukti_lampiran
     } = reportData;
-    
+
     let latitude = null;
     let longitude = null;
     try {
@@ -120,7 +120,7 @@ const ReportModel = {
     } catch (error) {
       console.error('Geocoding error:', error);
     }
-    
+
     const query = {
       text: `UPDATE laporan_masuk 
              SET judul = $1, 
@@ -134,18 +134,18 @@ const ReportModel = {
              WHERE id = $9 
              RETURNING *`,
       values: [
-        judul, 
-        jenis_infrastruktur, 
-        tanggal_kejadian, 
-        deskripsi, 
-        alamat, 
-        bukti_lampiran, 
-        latitude, 
-        longitude, 
+        judul,
+        jenis_infrastruktur,
+        tanggal_kejadian,
+        deskripsi,
+        alamat,
+        bukti_lampiran,
+        latitude,
+        longitude,
         id
       ]
     };
-  
+
     try {
       const result = await db.query(query);
       return result.rows[0];
@@ -178,7 +178,7 @@ const ReportModel = {
   },
   async getIncomingReports() {
     try {
-        const query = `
+      const query = `
             SELECT 
                 lm.id,
                 lm.judul,
@@ -195,18 +195,18 @@ const ReportModel = {
             ORDER BY lm.created_at DESC
         `;
 
-        const result = await db.query(query);
-        return result.rows;
+      const result = await db.query(query);
+      return result.rows;
     } catch (error) {
-        console.error('Error in getIncomingReports:', error);
-        throw error;
+      console.error('Error in getIncomingReports:', error);
+      throw error;
     }
-},
+  },
 
-async getReportDetail(id) {
-  try {
+  async getReportDetail(id) {
+    try {
       if (!id) {
-          throw new Error('ID is required');
+        throw new Error('ID is required');
       }
 
       const query = `
@@ -230,19 +230,19 @@ async getReportDetail(id) {
 
       const result = await db.query(query, [id]);
       if (result.rows.length === 0) {
-          throw new Error('Report not found');
+        throw new Error('Report not found');
       }
       return result.rows[0];
-  } catch (error) {
+    } catch (error) {
       console.error('Error in getReportDetail:', error);
       throw error;
-  }
-},
+    }
+  },
 
-async getReportsByUserId(userId) {
-  try {
+  async getReportsByUserId(userId) {
+    try {
       const query = {
-          text: `
+        text: `
               SELECT 
                   lm.id,
                   lm.judul,
@@ -261,39 +261,39 @@ async getReportsByUserId(userId) {
               WHERE lm.user_id = $1 
               ORDER BY lm.created_at DESC
           `,
-          values: [userId]
+        values: [userId]
       };
 
       const result = await db.query(query);
       return result.rows;
-  } catch (error) {
+    } catch (error) {
       console.error('Error in getReportsByUserId:', error);
       throw error;
-  }
-},
-
-async deleteReport(id) {
-  try {
-    const query = {
-      text: 'DELETE FROM laporan_masuk WHERE id = $1 RETURNING *',
-      values: [id]
-    };
-    
-    const result = await db.query(query);
-    
-    if (result.rows.length === 0) {
-      throw new Error('Laporan tidak ditemukan');
     }
-    
-    return result.rows[0];
-  } catch (error) {
-    throw error;
-  }
-},
+  },
 
-async getAllReports() {
-  try {
-    const query = `
+  async deleteReport(id) {
+    try {
+      const query = {
+        text: 'DELETE FROM laporan_masuk WHERE id = $1 RETURNING *',
+        values: [id]
+      };
+
+      const result = await db.query(query);
+
+      if (result.rows.length === 0) {
+        throw new Error('Laporan tidak ditemukan');
+      }
+
+      return result.rows[0];
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getAllReports() {
+    try {
+      const query = `
         SELECT 
             lm.id,
             lm.judul,
@@ -308,14 +308,14 @@ async getAllReports() {
         JOIN users u ON lm.user_id = u.id
         ORDER BY lm.created_at DESC
     `;
-    
-    const result = await db.query(query);
-    return result.rows;
-  } catch (error) {
-    console.error('Error in getAllReports:', error);
-    throw error;
+
+      const result = await db.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error('Error in getAllReports:', error);
+      throw error;
+    }
   }
-}
 
 
 
