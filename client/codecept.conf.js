@@ -13,12 +13,16 @@ exports.config = {
   helpers: {
     Playwright: {
       browser: 'chromium',
+      waitForTimeout: 5000,
+      waitForAction: 500,
       url: 'http://localhost:9000',
       show: true
     }
   },
   include: {
-    I: './steps_file.js'
+    I: './steps_file.js',
+    loginPage: './tests/e2e/pages/login.js',
+    registerPage: './tests/e2e/pages/register.js'
   },
   name: 'urbanaid'
 }
