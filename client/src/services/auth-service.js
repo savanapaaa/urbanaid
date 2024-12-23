@@ -1,5 +1,6 @@
-const BASE_URL = 'http://localhost:5000/api';
-const CLIENT_URL = 'http://localhost:9000';
+import { config } from '../config';
+const BASE_URL = config.BASE_URL;
+const CLIENT_URL = config.CLIENT_URL;
 
 const AuthService = {
   async login(email, password) {

@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:5000/api';
+import { config } from '../config';
+const BASE_URL = config.BASE_URL;
 
 const RiwayatService = {
   async getRiwayatByUser() {

@@ -20,16 +20,16 @@ const validate = async (decoded, request, h) => {
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 5000,
-    host: process.env.HOST || 'localhost',
+    host: '0.0.0.0',
     routes: {
       cors: {
-        origin: ['*'],
+        origin: ['https://urbanaid-client.vercel.app'], 
         headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
         credentials: true
       },
-      files: {
-        relativeTo: Path.join(__dirname, '../client/dist')
-      }
+      // files: {
+      //   relativeTo: Path.join(__dirname, '../client/dist')
+      // }
     },
   });
 
@@ -99,13 +99,13 @@ const init = async () => {
 
   server.route(routes);
 
-  server.route({
-    method: 'GET',
-    path: '/{path*}',
-    handler: {
-      file: 'index.html'
-    }
-  });
+  // server.route({
+  //   method: 'GET',
+  //   path: '/{path*}',
+  //   handler: {
+  //     file: 'index.html'
+  //   }
+  // });
 
   server.ext('onPreStart', () => {
     console.log('Registering routes:');
