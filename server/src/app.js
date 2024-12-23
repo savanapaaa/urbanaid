@@ -18,21 +18,33 @@ const validate = async (decoded, request, h) => {
 };
 
 const init = async () => {
+
+  console.log('Available routes:', authRoutes);  
   const server = Hapi.server({
     port: process.env.PORT || 5000,
     host: '0.0.0.0',
     routes: {
       cors: {
-        origin: ['https://urbanaid-client.vercel.app'], 
+        origin: ['https://urbanaid-client.vercel.app', 'http://localhost:9000'],
         headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
-        credentials: true
-      },
-      // files: {
-      //   relativeTo: Path.join(__dirname, '../client/dist')
-      // }
+        credentials: true,
+        additionalHeaders: ['X-Requested-With']
+      }
     },
   });
 
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: () => {
+        return { status: 'success', message: 'Server is running' };
+    },
+    options: {
+        auth: false
+    }
+});
+
+  // Register plugins
   await server.register([
     {
       plugin: jwt
@@ -42,44 +54,7 @@ const init = async () => {
     }
   ]);
 
-  server.route({
-    method: 'GET',
-    path: '/assets/{param*}',
-    handler: {
-      directory: {
-        path: '.',
-        redirectToSlash: true,
-        index: true,
-      }
-    }
-  });
-
-  server.route({
-    method: ['POST', 'PUT', 'PATCH', 'DELETE'],
-    path: '/api/{param*}',
-    options: {
-      payload: {
-        parse: true,
-        allow: ['application/json'],
-        maxBytes: 1048576 // 1MB
-      }
-    },
-    handler: (request, h) => h.continue
-  });
-
-  server.route({
-    method: 'POST',
-    path: '/api/auth/{param*}',
-    options: {
-      auth: false,
-      payload: {
-        parse: true,
-        allow: ['application/json']
-      }
-    },
-    handler: (request, h) => h.continue
-  });
-
+  // Setup JWT auth strategy
   server.auth.strategy('jwt', 'jwt', {
     key: process.env.JWT_SECRET,
     validate,
@@ -88,6 +63,7 @@ const init = async () => {
 
   server.auth.default('jwt');
 
+  // Register all routes
   const routes = [
     ...authRoutes,
     ...statisticsRoutes,
@@ -99,14 +75,15 @@ const init = async () => {
 
   server.route(routes);
 
-  // server.route({
-  //   method: 'GET',
-  //   path: '/{path*}',
-  //   handler: {
-  //     file: 'index.html'
-  //   }
-  // });
+  // Error logging
+  server.events.on('response', (request) => {
+    console.log(`${request.info.remoteAddress}: ${request.method.toUpperCase()} ${request.path} --> ${request.response.statusCode}`);
+    if (request.response.statusCode >= 400) {
+      console.error('Error details:', request.response.source);
+    }
+  });
 
+  // Route logging on startup
   server.ext('onPreStart', () => {
     console.log('Registering routes:');
     routes.forEach((route) => {
@@ -125,7 +102,7 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-  console.log(err);
+  console.error('Unhandled rejection:', err);
   process.exit(1);
 });
 
