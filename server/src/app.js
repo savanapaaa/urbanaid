@@ -24,13 +24,14 @@ const init = async () => {
     port: process.env.PORT || 5000,
     host: '0.0.0.0',
     routes: {
-        cors: {
-            origin: ['*'], 
-            headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
-            credentials: true,
-            additionalHeaders: ['X-Requested-With']
-        }
-    },
+      cors: {
+          origin: ['https://urbanaid-client.vercel.app', 'http://localhost:9000'],
+          headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
+          credentials: true,
+          additionalHeaders: ['X-Requested-With']
+      },
+  },
+  
 });
 
   server.route({

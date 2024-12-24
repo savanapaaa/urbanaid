@@ -14,7 +14,7 @@ const ReportService = {
       const response = await fetch(`${BASE_URL}/reports`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: formData
       });
@@ -50,7 +50,9 @@ const ReportService = {
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/reports/user`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -71,7 +73,9 @@ const ReportService = {
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/reports`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -92,7 +96,9 @@ const ReportService = {
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/reports/${id}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -137,7 +143,9 @@ const ReportService = {
       const response = await fetch(`${BASE_URL}/reports/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -163,7 +171,8 @@ const ReportService = {
       const response = await fetch(`${BASE_URL}/reports/incoming`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -197,7 +206,8 @@ const ReportService = {
       const response = await fetch(`${BASE_URL}/reports/detail/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
