@@ -18,32 +18,91 @@ const validate = async (decoded, request, h) => {
 };
 
 const init = async () => {
-
   console.log('Available routes:', authRoutes);  
   const server = Hapi.server({
     port: process.env.PORT || 5000,
     host: '0.0.0.0',
     routes: {
       cors: {
-          origin: ['https://urbanaid-client.vercel.app', 'http://localhost:9000'],
-          headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
-          credentials: true,
-          additionalHeaders: ['X-Requested-With']
+        origin: ['*'],
+        headers: [
+          'Accept',
+          'Authorization',
+          'Content-Type',
+          'If-None-Match',
+          'X-Requested-With'
+        ],
+        exposedHeaders: ['Authorization', 'Content-Type'],
+        additionalHeaders: ['X-Requested-With'],
+        credentials: false
       },
-  },
-  
-});
+    },
+  });
 
+  // Pre-handler untuk CORS
+  server.ext('onPreHandler', (request, h) => {
+    if (request.method === 'options') {
+      const response = h.response('OK');
+      response.header('Access-Control-Allow-Origin', '*');
+      response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      response.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With');
+      return response;
+    }
+    return h.continue;
+  });
+
+  // Pre-response handler untuk CORS
+  server.ext('onPreResponse', (request, h) => {
+    const response = request.response;
+    if (response.isBoom) {
+      response.output.headers['Access-Control-Allow-Origin'] = '*';
+      response.output.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
+      response.output.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, X-Requested-With';
+    } else {
+      response.header('Access-Control-Allow-Origin', '*');
+      response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      response.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With');
+    }
+    return h.continue;
+  });
+
+  // Logging middleware untuk request
+  server.ext('onRequest', (request, h) => {
+    console.log('Incoming request:', {
+      method: request.method,
+      path: request.path,
+      headers: request.headers
+    });
+    return h.continue;
+  });
+
+  // Root route
   server.route({
     method: 'GET',
     path: '/',
     handler: () => {
-        return { status: 'success', message: 'Server is running' };
+      return { status: 'success', message: 'Server is running' };
     },
     options: {
-        auth: false
+      auth: false
     }
-});
+  });
+
+  // OPTIONS route untuk CORS preflight
+  server.route({
+    method: 'OPTIONS',
+    path: '/{any*}',
+    handler: (request, h) => {
+      const response = h.response('OK');
+      response.header('Access-Control-Allow-Origin', '*');
+      response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      response.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With');
+      return response;
+    },
+    options: {
+      auth: false
+    }
+  });
 
   // Register plugins
   await server.register([
@@ -76,9 +135,15 @@ const init = async () => {
 
   server.route(routes);
 
-  // Error logging
+  // Response logging
   server.events.on('response', (request) => {
-    console.log(`${request.info.remoteAddress}: ${request.method.toUpperCase()} ${request.path} --> ${request.response.statusCode}`);
+    console.log('Response sent:', {
+      method: request.method,
+      path: request.path,
+      statusCode: request.response.statusCode,
+      headers: request.response.headers
+    });
+
     if (request.response.statusCode >= 400) {
       console.error('Error details:', request.response.source);
     }
