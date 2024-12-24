@@ -19,15 +19,13 @@ const validate = async (decoded, request, h) => {
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 5000,
+    port: process.env.PORT,
     host: '0.0.0.0',
     routes: {
       cors: {
-        origin: ['https://urbanaid-client.vercel.app'], // Specify exact origin
-        credentials: true,
-        headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
-        exposedHeaders: ['Authorization'],
-        maxAge: 86400
+        origin: ['https://urbanaid-client.vercel.app'],
+        additionalHeaders: ['cache-control', 'x-requested-with'],
+        credentials: true
       }
     }
   });
@@ -37,12 +35,13 @@ const init = async () => {
     method: 'OPTIONS',
     path: '/{any*}',
     handler: (request, h) => {
-      return h.response('OK')
-        .code(200)
-        .header('Access-Control-Allow-Origin', 'https://urbanaid-client.vercel.app')
-        .header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        .header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With')
-        .header('Access-Control-Max-Age', '86400');
+      const response = h.response('OK');
+      response.header('Access-Control-Allow-Origin', 'https://urbanaid-client.vercel.app');
+      response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      response.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With');
+      response.header('Access-Control-Allow-Credentials', 'true');
+      response.code(200);
+      return response;
     },
     options: {
       auth: false,
@@ -82,10 +81,8 @@ const init = async () => {
       ...route.options,
       cors: {
         origin: ['https://urbanaid-client.vercel.app'],
-        headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
-        exposedHeaders: ['Authorization'],
         credentials: true,
-        maxAge: 86400
+        additionalHeaders: ['cache-control', 'x-requested-with']
       }
     }
   }));
