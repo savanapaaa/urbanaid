@@ -1,5 +1,4 @@
-import { config } from '../config';
-const BASE_URL = config.BASE_URL;
+const BASE_URL = 'https://urbanaid-api.vercel.app';
 
 const SuperAdminService = {
   async getAllAdmins(page = 1, limit = 10, search = '') {

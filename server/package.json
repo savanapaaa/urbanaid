@@ -7,8 +7,6 @@
     "test:watch": "jest --watchAll",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-        "vercel-build": "node src/app.js",
-    "seed": "node src/database/seeds/createSuperAdmin.js",
     "create-superadmin": "node src/database/seeds/createSuperAdmin.js",
     "seed-admin": "node src/database/seeds/createAdmin.js"
   },

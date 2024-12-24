@@ -1,6 +1,5 @@
-import { config } from '../config';
 class ReviewService {
-  static BASE_URL = config.BASE_URL;
+  static BASE_URL = 'http://localhost:5000';
 
   static async createReview(reviewData) {
     try {

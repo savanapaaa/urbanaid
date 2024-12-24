@@ -19,52 +19,75 @@ const validate = async (decoded, request, h) => {
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT,
-    host: '0.0.0.0',
+    port: process.env.PORT || 5000,
+    host: process.env.HOST || 'localhost',
     routes: {
       cors: {
-        origin: ['https://urbanaid-client.vercel.app'],
-        additionalHeaders: ['cache-control', 'x-requested-with'],
+        origin: ['*'],
+        headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
         credentials: true
+      },
+      files: {
+        relativeTo: Path.join(__dirname, '../client/dist')
+      }
+    },
+  });
+
+  await server.register([
+    {
+      plugin: jwt
+    },
+    {
+      plugin: Inert
+    }
+  ]);
+
+  server.route({
+    method: 'GET',
+    path: '/assets/{param*}',
+    handler: {
+      directory: {
+        path: '.',
+        redirectToSlash: true,
+        index: true,
       }
     }
   });
 
-  // Global route untuk menangani OPTIONS requests
   server.route({
-    method: 'OPTIONS',
-    path: '/{any*}',
-    handler: (request, h) => {
-      const response = h.response('OK');
-      response.header('Access-Control-Allow-Origin', 'https://urbanaid-client.vercel.app');
-      response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-      response.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Requested-With');
-      response.header('Access-Control-Allow-Credentials', 'true');
-      response.code(200);
-      return response;
-    },
+    method: ['POST', 'PUT', 'PATCH', 'DELETE'],
+    path: '/api/{param*}',
     options: {
-      auth: false,
-      cors: true
-    }
+      payload: {
+        parse: true,
+        allow: ['application/json'],
+        maxBytes: 1048576 // 1MB
+      }
+    },
+    handler: (request, h) => h.continue
   });
 
-  // Plugin registration
-  await server.register([
-    { plugin: jwt },
-    { plugin: Inert }
-  ]);
+  server.route({
+    method: 'POST',
+    path: '/api/auth/{param*}',
+    options: {
+      auth: false,
+      payload: {
+        parse: true,
+        allow: ['application/json']
+      }
+    },
+    handler: (request, h) => h.continue
+  });
 
-  // JWT strategy setup
   server.auth.strategy('jwt', 'jwt', {
     key: process.env.JWT_SECRET,
     validate,
-    verifyOptions: { algorithms: ['HS256'] }
+    verifyOptions: { algorithms: ['HS256'] },
   });
 
   server.auth.default('jwt');
 
-  // Register all routes
   const routes = [
     ...authRoutes,
     ...statisticsRoutes,
@@ -74,24 +97,27 @@ const init = async () => {
     ...superadminRoutes
   ];
 
-  // Add CORS options to each route
-  const routesWithCors = routes.map(route => ({
-    ...route,
-    options: {
-      ...route.options,
-      cors: {
-        origin: ['https://urbanaid-client.vercel.app'],
-        credentials: true,
-        additionalHeaders: ['cache-control', 'x-requested-with']
-      }
+  server.route(routes);
+
+  server.route({
+    method: 'GET',
+    path: '/{path*}',
+    handler: {
+      file: 'index.html'
     }
-  }));
+  });
 
-  server.route(routesWithCors);
-
-  // Response monitoring
-  server.events.on('response', request => {
-    console.log(`${request.info.remoteAddress}: ${request.method.toUpperCase()} ${request.path} --> ${request.response.statusCode}`);
+  server.ext('onPreStart', () => {
+    console.log('Registering routes:');
+    routes.forEach((route) => {
+      if (Array.isArray(route.method)) {
+        route.method.forEach((method) => {
+          console.log(`  ${method.toUpperCase()} ${route.path}`);
+        });
+      } else {
+        console.log(`  ${route.method.toUpperCase()} ${route.path}`);
+      }
+    });
   });
 
   await server.start();
@@ -99,7 +125,7 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-  console.error('Unhandled rejection:', err);
+  console.log(err);
   process.exit(1);
 });
 

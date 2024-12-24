@@ -5,7 +5,7 @@ import AuthService from '../../services/auth-service.js';
 import Swal from 'sweetalert2';
 import '../../styles/admin.css';
 
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'https://urbanaid-api.vercel.app';
 
 const ManagementAdmin = {
   admins: [],

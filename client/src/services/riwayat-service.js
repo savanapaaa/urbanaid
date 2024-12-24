@@ -1,10 +1,8 @@
-import { config } from '../config';
-const BASE_URL = config.BASE_URL;
+const BASE_URL = 'https://urbanaid-api.vercel.app';
 
 const RiwayatService = {
   async getRiwayatByUser() {
     try {
-      console.log('Calling API at:', `${BASE_URL}/riwayat/user`);
       const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/riwayat/user`, {
         headers: {

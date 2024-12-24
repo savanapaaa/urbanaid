@@ -6,17 +6,8 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
+  port: process.env.DB_PORT,
 });
-
-pool.query('SELECT * FROM users LIMIT 1')
-  .then(res => {
-    console.log('Connection successful!');
-    console.log('Sample data:', res.rows);
-  })
-  .catch(err => {
-    console.error('Connection error:', err);
-  });
 
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {

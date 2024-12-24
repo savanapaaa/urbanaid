@@ -1,16 +1,12 @@
-import { config } from '../config';
-const BASE_URL = config.BASE_URL;
+const BASE_URL = 'https://urbanaid-api.vercel.app';
 
 const StatisticService = {
   async getReportStatistics() {
     try {
       const response = await fetch(`${BASE_URL}/statistics/reports`, {
         method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
       });
 
@@ -33,11 +29,8 @@ const StatisticService = {
     try {
       const response = await fetch(`${BASE_URL}/statistics/reviews`, {
         method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
       });
 
@@ -54,15 +47,10 @@ const StatisticService = {
 
   async getUserStatistics(userId) {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/statistics/user/${userId}`, {
         method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
       });
 
@@ -87,24 +75,16 @@ const StatisticService = {
       };
     }
   },
-
   async getDashboardData() {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/statistics/dashboard`, {
         method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
       });
 
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Error response:', errorData);
         throw new Error('Failed to fetch dashboard data');
       }
 

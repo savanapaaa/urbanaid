@@ -1,12 +1,10 @@
-import { config } from '../config';
-const BASE_URL = config.BASE_URL;
-const CLIENT_URL = config.CLIENT_URL;
+const BASE_URL = 'https://urbanaid-api.vercel.app';
+const CLIENT_URL = 'http://localhost:9000';
 
 const AuthService = {
   async login(email, password) {
     const response = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },

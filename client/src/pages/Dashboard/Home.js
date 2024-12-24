@@ -4,7 +4,6 @@ import StatisticService from '../../services/statistic-service.js';
 import { CountUp } from 'countup.js';
 import Loading from '../../components/common/Loading.js';
 import SkeletonLoading from '../../components/common/SkeletonLoading.js';
-import { config } from '../../config.js';
 
 const HomePage = {
   stats: {
@@ -89,8 +88,6 @@ const HomePage = {
     if (appContainer) {
       appContainer.innerHTML = content;
     }
-    console.log('Current NODE_ENV:', process.env.NODE_ENV);
-console.log('Current BASE_URL:', config.BASE_URL);
   },
 
   initTilt() {
